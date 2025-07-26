@@ -3,175 +3,497 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BNP Paribas - Online Banking</title>
+    <title>BNP Paribas - La banque d'un monde qui change</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
     <style>
         :root {
-            --primary-color: #007A33;
-            --secondary-color: #ffffff;
-            --accent-color: #f0f0f0;
-            --text-color: #333333;
-            --dark-primary: #005a25;
-            --error-color: #d9534f;
-            --success-color: #5cb85c;
-            --hover-color: rgba(0, 122, 51, 0.1);
-            --transition-speed: 0.3s;
+            --primary: #007A33;
+            --primary-dark: #005a25;
+            --primary-light: rgba(0, 122, 51, 0.1);
+            --secondary: #2D3748;
+            --accent: #4FD1C5;
+            --white: #FFFFFF;
+            --light: #F7FAFC;
+            --gray: #A0AEC0;
+            --dark: #1A202C;
+            --success: #48BB78;
+            --warning: #ED8936;
+            --error: #F56565;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--accent-color);
-            color: var(--text-color);
-            transition: all var(--transition-speed);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--light);
+            color: var(--secondary);
             line-height: 1.6;
+            overflow-x: hidden;
         }
 
         body.dark-mode {
-            background-color: #121212;
-            --accent-color: #1e1e1e;
-            --text-color: #f0f0f0;
-            --secondary-color: #2d2d2d;
-            --hover-color: rgba(0, 122, 51, 0.3);
+            background-color: var(--dark);
+            color: var(--light);
         }
 
-        .marquee {
-            background-color: #000;
-            color: white;
-            padding: 10px 0;
-            white-space: nowrap;
-            overflow: hidden;
-            font-size: 14px;
-            position: relative;
+        /* Typography */
+        h1, h2, h3, h4 {
+            font-weight: 600;
+            line-height: 1.2;
+            margin-bottom: 1rem;
         }
 
-        .marquee span {
-            display: inline-block;
-            padding-left: 100%;
-            animation: marquee 20s linear infinite;
+        h1 { font-size: 2.5rem; }
+        h2 { font-size: 2rem; }
+        h3 { font-size: 1.5rem; }
+        h4 { font-size: 1.25rem; }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--gray);
         }
 
-        @keyframes marquee {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(-100%, 0); }
+        body.dark-mode p {
+            color: var(--gray);
         }
 
-        header {
-            background-color: var(--primary-color);
-            color: var(--secondary-color);
-            padding: 20px 0;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            position: relative;
-        }
-
-        .logo {
-            font-size: 28px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.2s;
-        }
-
-        .logo:hover {
-            transform: scale(1.02);
-        }
-
-        .logo i {
-            margin-right: 15px;
-            font-size: 32px;
-        }
-
-        nav {
-            display: flex;
-            justify-content: center;
-            background-color: var(--dark-primary);
-            padding: 12px 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        nav a {
-            color: var(--secondary-color);
-            text-decoration: none;
-            padding: 12px 24px;
-            margin: 0 5px;
-            border-radius: 6px;
-            transition: all var(--transition-speed);
-            font-size: 15px;
-            display: flex;
-            align-items: center;
-        }
-
-        nav a i {
-            margin-right: 8px;
-            font-size: 16px;
-        }
-
-        nav a:hover, nav a.active {
-            background-color: rgba(255,255,255,0.2);
-            transform: translateY(-2px);
-        }
-
+        /* Layout */
         .container {
             max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 30px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
         }
 
         .section {
-            display: none;
-            background-color: var(--secondary-color);
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            margin-bottom: 30px;
-            animation: fadeIn 0.5s ease-out;
-            overflow: hidden;
+            padding: 5rem 0;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
         }
 
-        .section.active {
-            display: block;
+        .section-title h2 {
+            position: relative;
+            display: inline-block;
+            padding-bottom: 1rem;
         }
 
-        h2 {
-            color: var(--primary-color);
-            border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 12px;
-            margin-top: 0;
-            font-size: 28px;
+        .section-title h2:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: var(--primary);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .btn i {
+            margin-right: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-lg {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+        }
+
+        /* Header */
+        .top-bar {
+            background-color: var(--secondary);
+            color: var(--white);
+            padding: 0.5rem 0;
+            font-size: 0.875rem;
+        }
+
+        .top-bar .container {
             display: flex;
+            justify-content: space-between;
             align-items: center;
         }
 
-        h2 i {
-            margin-right: 12px;
+        .top-bar a {
+            color: var(--white);
+            text-decoration: none;
+            margin-left: 1.5rem;
+            transition: color 0.3s;
+        }
+
+        .top-bar a:hover {
+            color: var(--accent);
+        }
+
+        .main-header {
+            background-color: var(--white);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        body.dark-mode .main-header {
+            background-color: var(--secondary);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo img {
+            height: 50px;
+            transition: transform 0.3s;
+        }
+
+        .logo:hover img {
+            transform: scale(1.05);
+        }
+
+        .main-nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        .main-nav li {
+            margin-left: 2rem;
+            position: relative;
+        }
+
+        .main-nav a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 0;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        body.dark-mode .main-nav a {
+            color: var(--light);
+        }
+
+        .main-nav a:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary);
+            transition: width 0.3s;
+        }
+
+        .main-nav a:hover:after,
+        .main-nav a.active:after {
+            width: 100%;
+        }
+
+        .main-nav a:hover,
+        .main-nav a.active {
+            color: var(--primary);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        body.dark-mode .mobile-menu-btn {
+            color: var(--light);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--white);
+            padding: 6rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero .container {
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-content {
+            flex: 1;
+            padding-right: 3rem;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .hero-image {
+            flex: 1;
+            position: relative;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .hero-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* Features Section */
+        .features {
+            background-color: var(--white);
+        }
+
+        body.dark-mode .features {
+            background-color: var(--secondary);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background-color: var(--light);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        body.dark-mode .feature-card {
+            background-color: var(--dark);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: var(--white);
+            font-size: 2rem;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover .feature-icon {
+            background-color: var(--primary-dark);
+            transform: rotate(15deg) scale(1.1);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        /* Offers Section */
+        .offers {
+            background-color: var(--light);
+        }
+
+        body.dark-mode .offers {
+            background-color: var(--dark);
+        }
+
+        .offers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .offer-card {
+            background-color: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+        }
+
+        body.dark-mode .offer-card {
+            background-color: var(--secondary);
+        }
+
+        .offer-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .offer-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .offer-image:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.7));
+        }
+
+        .offer-tag {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 0.25rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: bold;
+            z-index: 1;
+        }
+
+        .offer-content {
+            padding: 1.5rem;
+        }
+
+        .offer-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .offer-content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .offer-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--gray);
+            font-size: 0.875rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Login Section */
+        .login-section {
+            display: none;
+            min-height: 100vh;
+            background-color: var(--light);
+            padding: 5rem 0;
+        }
+
+        body.dark-mode .login-section {
+            background-color: var(--dark);
         }
 
         .login-container {
             max-width: 450px;
-            margin: 80px auto;
-            background-color: var(--secondary-color);
-            padding: 40px;
+            margin: 0 auto;
+            background-color: var(--white);
+            padding: 3rem;
             border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            box-shadow: var(--shadow-lg);
             transform: translateY(0);
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        body.dark-mode .login-container {
+            background-color: var(--secondary);
+        }
+
+        .login-container:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background-color: var(--primary);
         }
 
         .login-container:hover {
@@ -181,185 +503,402 @@
 
         .login-container h2 {
             text-align: center;
-            margin-bottom: 30px;
-            border-bottom: none;
+            margin-bottom: 2rem;
+            color: var(--primary);
         }
 
         .form-group {
-            margin-bottom: 25px;
+            margin-bottom: 1.5rem;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 10px;
-            font-weight: bold;
-            font-size: 15px;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
         }
 
         .form-group input {
             width: 100%;
-            padding: 14px;
+            padding: 0.875rem;
             border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: all var(--transition-speed);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        body.dark-mode .form-group input {
+            background-color: var(--dark);
+            border-color: var(--secondary);
+            color: var(--light);
         }
 
         .form-group input:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(0, 122, 51, 0.2);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
             outline: none;
         }
 
-        .btn {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 16px 24px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            width: 100%;
-            transition: all var(--transition-speed);
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            display: inline-flex;
+        .error-message {
+            color: var(--error);
+            text-align: center;
+            margin-top: 1rem;
+            display: none;
+            padding: 0.75rem;
+            border-radius: 6px;
+            background-color: rgba(245, 101, 101, 0.1);
+            border-left: 4px solid var(--error);
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: none;
+            background-color: var(--light);
+            min-height: 100vh;
+        }
+
+        body.dark-mode .dashboard {
+            background-color: var(--dark);
+        }
+
+        .dashboard-header {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 1.5rem 0;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .dashboard-header .container {
+            display: flex;
+            justify-content: space-between;
             align-items: center;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background-color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+
+        .user-name {
+            font-weight: 600;
+            margin-right: 1rem;
+        }
+
+        .logout-btn {
+            background-color: transparent;
+            color: var(--white);
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .logout-btn:hover {
+            color: var(--accent);
+        }
+
+        .logout-btn i {
+            margin-right: 0.5rem;
+        }
+
+        .dashboard-nav {
+            background-color: var(--white);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        body.dark-mode .dashboard-nav {
+            background-color: var(--secondary);
+        }
+
+        .dashboard-nav ul {
+            display: flex;
+            list-style: none;
             justify-content: center;
         }
 
-        .btn:hover {
-            background-color: var(--dark-primary);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        .dashboard-nav li {
+            margin: 0 1rem;
         }
 
-        .btn i {
-            margin-right: 10px;
+        .dashboard-nav a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 1rem 0;
+            position: relative;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
         }
 
-        .btn-secondary {
-            background-color: #666;
+        body.dark-mode .dashboard-nav a {
+            color: var(--light);
         }
 
-        .btn-secondary:hover {
-            background-color: #555;
+        .dashboard-nav a:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background-color: var(--primary);
+            transition: var(--transition);
         }
 
-        .error-message {
-            color: var(--error-color);
-            text-align: center;
-            margin-top: 15px;
+        .dashboard-nav a:hover:after,
+        .dashboard-nav a.active:after {
+            width: 100%;
+        }
+
+        .dashboard-nav a:hover,
+        .dashboard-nav a.active {
+            color: var(--primary);
+        }
+
+        .dashboard-nav a i {
+            margin-right: 0.5rem;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -10px;
+            background-color: var(--error);
+            color: var(--white);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .dashboard-content {
+            padding: 2rem 0;
+        }
+
+        .dashboard-section {
             display: none;
-            padding: 12px;
-            border-radius: 6px;
-            background-color: rgba(217, 83, 79, 0.1);
-            border-left: 4px solid var(--error-color);
+            animation: fadeIn 0.5s ease-out;
         }
 
+        .dashboard-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Account Card */
         .account-card {
-            background-color: var(--accent-color);
+            background-color: var(--white);
             border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-left: 5px solid var(--primary-color);
-            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            border-left: 4px solid var(--primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        body.dark-mode .account-card {
+            background-color: var(--secondary);
         }
 
         .account-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .account-card:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0,122,51,0.1), transparent);
+            z-index: 0;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .account-card:hover:after {
+            opacity: 1;
         }
 
         .account-card h3 {
-            margin-top: 0;
-            color: var(--primary-color);
-            font-size: 20px;
+            font-size: 1.25rem;
+            color: var(--primary);
             display: flex;
             align-items: center;
         }
 
         .account-card h3 i {
-            margin-right: 10px;
-            font-size: 18px;
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
         }
 
         .account-balance {
-            font-size: 32px;
-            font-weight: bold;
-            margin: 15px 0;
-            color: var(--text-color);
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 1rem 0;
+            color: var(--secondary);
+            position: relative;
+        }
+
+        body.dark-mode .account-balance {
+            color: var(--light);
+        }
+
+        .balance-pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { text-shadow: 0 0 0 rgba(0, 122, 51, 0.4); }
+            50% { text-shadow: 0 0 10px rgba(0, 122, 51, 0.8); }
+            100% { text-shadow: 0 0 0 rgba(0, 122, 51, 0.4); }
         }
 
         .account-details {
             display: flex;
-            justify-content: space-between;
-            font-size: 15px;
-            color: #666;
             flex-wrap: wrap;
+            gap: 1rem;
+            font-size: 0.875rem;
+            color: var(--gray);
         }
 
         .account-details span {
-            margin-right: 15px;
-            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
         }
 
+        .account-details i {
+            margin-right: 0.5rem;
+        }
+
+        /* Chart */
+        .chart-container {
+            margin: 2rem 0;
+            height: 350px;
+            background-color: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+        }
+
+        body.dark-mode .chart-container {
+            background-color: var(--secondary);
+        }
+
+        .chart-container:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Transactions */
         .transaction-list {
-            margin-top: 40px;
+            margin-top: 2rem;
+        }
+
+        .transaction-list h3 {
+            font-size: 1.25rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .transaction-list h3 i {
+            margin-right: 0.75rem;
         }
 
         .transaction-item {
             display: flex;
             justify-content: space-between;
-            padding: 16px 0;
+            align-items: center;
+            padding: 1rem 0;
             border-bottom: 1px solid #eee;
-            transition: background-color var(--transition-speed);
+            transition: var(--transition);
+        }
+
+        body.dark-mode .transaction-item {
+            border-bottom-color: var(--secondary);
         }
 
         .transaction-item:hover {
-            background-color: var(--hover-color);
+            background-color: var(--primary-light);
+        }
+
+        .transaction-description {
+            font-weight: 500;
         }
 
         .transaction-date {
-            color: #666;
-            font-size: 14px;
+            color: var(--gray);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
         }
 
         .transaction-amount {
-            font-weight: bold;
-            font-size: 16px;
+            font-weight: 600;
+            font-size: 1.1rem;
         }
 
         .positive {
-            color: var(--success-color);
+            color: var(--success);
         }
 
         .negative {
-            color: var(--error-color);
+            color: var(--error);
         }
 
+        /* Transfer Form */
         .transfer-form {
-            margin-top: 30px;
+            margin-top: 2rem;
         }
 
         .form-row {
             display: flex;
-            margin-bottom: 20px;
-            gap: 20px;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
         }
 
         .form-col {
             flex: 1;
-            min-width: 0;
         }
 
         select {
             width: 100%;
-            padding: 14px;
+            padding: 0.875rem;
             border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: all var(--transition-speed);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: var(--transition);
             appearance: none;
             background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
             background-repeat: no-repeat;
@@ -367,144 +906,53 @@
             background-size: 16px;
         }
 
+        body.dark-mode select {
+            background-color: var(--dark);
+            border-color: var(--secondary);
+            color: var(--light);
+        }
+
         select:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(0, 122, 51, 0.2);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
             outline: none;
         }
 
-        .success-message {
-            background-color: var(--success-color);
-            color: white;
-            padding: 18px;
-            border-radius: 8px;
-            margin-top: 25px;
-            display: none;
-            align-items: center;
-            animation: slideIn 0.5s ease-out;
+        /* Messages */
+        .message-item {
+            border-bottom: 1px solid #eee;
+            padding: 1.5rem 0;
+            transition: var(--transition);
         }
 
-        .error-message {
-            background-color: var(--error-color);
-            color: white;
-            padding: 18px;
-            border-radius: 8px;
-            margin-top: 25px;
-            display: none;
-            align-items: center;
-            animation: slideIn 0.5s ease-out;
+        body.dark-mode .message-item {
+            border-bottom-color: var(--secondary);
         }
 
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .message-item:hover {
+            background-color: var(--primary-light);
         }
 
-        .success-message i, .error-message i {
-            margin-right: 12px;
-            font-size: 20px;
+        .message-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
         }
 
-        .receipt-actions {
-            margin-top: 30px;
-            display: flex;
-            gap: 15px;
+        .message-date {
+            color: var(--gray);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
         }
 
-        .receipt-actions .btn {
-            flex: 1;
+        .message-content p {
+            margin-bottom: 0.5rem;
         }
 
-        .dark-mode-toggle {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background-color: var(--primary-color);
-            color: white;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            z-index: 1000;
-            transition: all var(--transition-speed);
-        }
-
-        .dark-mode-toggle:hover {
-            transform: scale(1.1) rotate(15deg);
-        }
-
-        .dark-mode-toggle i {
-            font-size: 24px;
-        }
-
-        .card {
-            background-color: var(--accent-color);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            transition: transform var(--transition-speed);
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card h3 {
-            margin-top: 0;
-            color: var(--primary-color);
-            font-size: 20px;
-            display: flex;
-            align-items: center;
-        }
-
-        .card h3 i {
-            margin-right: 10px;
-            font-size: 18px;
-        }
-
-        .card-details {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .card-number {
-            font-family: monospace;
-            letter-spacing: 2px;
-            font-size: 18px;
-            margin: 10px 0;
-            flex: 1;
-            min-width: 100%;
-        }
-
-        .card-expiry {
-            font-size: 15px;
-            color: #666;
-        }
-
-        .card-limit {
-            font-size: 15px;
-            color: #666;
-        }
-
-        .chart-container {
-            margin-top: 40px;
-            height: 350px;
-            background-color: var(--secondary-color);
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-
+        /* Profile */
         .profile-info {
             display: flex;
-            margin-bottom: 30px;
+            margin-bottom: 2rem;
             align-items: center;
             flex-wrap: wrap;
         }
@@ -512,16 +960,17 @@
         .profile-avatar {
             width: 120px;
             height: 120px;
-            background-color: var(--accent-color);
+            background-color: var(--primary-light);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 30px;
-            font-size: 48px;
-            color: var(--primary-color);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            transition: transform var(--transition-speed);
+            margin-right: 2rem;
+            font-size: 3rem;
+            color: var(--primary);
+            font-weight: bold;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
         }
 
         .profile-avatar:hover {
@@ -534,254 +983,187 @@
         }
 
         .profile-details h3 {
-            margin-top: 0;
-            color: var(--primary-color);
-            font-size: 28px;
-            margin-bottom: 10px;
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
         }
 
         .profile-details p {
-            margin: 8px 0;
-            font-size: 16px;
+            margin: 0.5rem 0;
+            display: flex;
+            align-items: center;
         }
 
+        .profile-details i {
+            margin-right: 0.75rem;
+            width: 20px;
+            color: var(--primary);
+        }
+
+        /* Settings Form */
         .settings-form {
-            margin-top: 30px;
+            margin-top: 2rem;
         }
 
         .settings-form .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 1.5rem;
         }
 
-        .settings-form label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            font-size: 15px;
-        }
-
-        .settings-form input, .settings-form select {
-            width: 100%;
-            padding: 14px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: all var(--transition-speed);
-        }
-
-        .settings-form input:focus, .settings-form select:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(0, 122, 51, 0.2);
-            outline: none;
-        }
-
-        .settings-form .form-row {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .settings-form .form-row .form-group {
-            flex: 1;
-            min-width: 250px;
-        }
-
-        .message-item {
-            border-bottom: 1px solid #eee;
-            padding: 20px 0;
-            transition: background-color var(--transition-speed);
-        }
-
-        .message-item:hover {
-            background-color: var(--hover-color);
-        }
-
-        .message-item:last-child {
-            border-bottom: none;
-        }
-
-        .message-title {
-            font-weight: bold;
-            margin-bottom: 8px;
-            font-size: 18px;
-            color: var(--primary-color);
-        }
-
-        .message-date {
-            font-size: 14px;
-            color: #666;
-        }
-
-        .message-content {
-            margin-top: 12px;
-            font-size: 15px;
-            line-height: 1.6;
-        }
-
-        .faq-item {
-            margin-bottom: 20px;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
-        .faq-question {
-            font-weight: bold;
-            color: var(--primary-color);
-            cursor: pointer;
-            padding: 16px 20px;
-            background-color: var(--accent-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: all var(--transition-speed);
-        }
-
-        .faq-question:hover {
-            background-color: var(--hover-color);
-        }
-
-        .faq-question i {
-            transition: transform var(--transition-speed);
-        }
-
-        .faq-question.active i {
-            transform: rotate(180deg);
-        }
-
-        .faq-answer {
-            padding: 0 20px;
-            background-color: var(--secondary-color);
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height var(--transition-speed), padding var(--transition-speed);
-        }
-
-        .faq-answer.active {
-            max-height: 500px;
-            padding: 20px;
-        }
-
-        .offer-card {
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            overflow: hidden;
-            margin-bottom: 30px;
-            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
-        }
-
-        .offer-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-
-        .offer-image {
-            height: 180px;
-            background-color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 32px;
-            background: linear-gradient(135deg, var(--primary-color), var(--dark-primary));
-        }
-
-        .offer-content {
-            padding: 20px;
-        }
-
-        .offer-title {
-            font-weight: bold;
-            margin-top: 0;
-            color: var(--primary-color);
-            font-size: 22px;
-        }
-
-        .offer-description {
-            margin-bottom: 20px;
-            font-size: 15px;
-            line-height: 1.6;
-        }
-
-        .offer-validity {
-            font-size: 14px;
-            color: #666;
-        }
-
-        .rib-container {
-            background-color: var(--accent-color);
-            padding: 25px;
-            border-radius: 12px;
-            margin-top: 30px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-
-        .rib-info {
-            font-family: monospace;
-            font-size: 18px;
-            line-height: 1.8;
-            padding: 15px;
-            background-color: var(--secondary-color);
-            border-radius: 8px;
-            margin-top: 15px;
-        }
-
-        .rib-actions {
-            margin-top: 25px;
-            display: flex;
-            gap: 15px;
-        }
-
-        .logout-btn {
-            background-color: var(--error-color);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            position: absolute;
-            top: 25px;
-            right: 30px;
-            display: flex;
-            align-items: center;
-            transition: all var(--transition-speed);
-        }
-
-        .logout-btn:hover {
-            background-color: #c9302c;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        .logout-btn i {
-            margin-right: 8px;
-        }
-
-        .notification-badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background-color: var(--error-color);
-            color: white;
+        /* Dark Mode Toggle */
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: var(--primary);
+            color: var(--white);
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
-            width: 20px;
-            height: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
-            font-weight: bold;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            transition: var(--transition);
+            border: none;
         }
 
-        /* Responsive adjustments */
+        .dark-mode-toggle:hover {
+            transform: scale(1.1);
+            background-color: var(--primary-dark);
+        }
+
+        .dark-mode-toggle i {
+            font-size: 1.5rem;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--secondary);
+            color: var(--white);
+            padding: 4rem 0 2rem;
+        }
+
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-column h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.75rem;
+        }
+
+        .footer-column h3:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background-color: var(--primary);
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-column a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-column a:hover {
+            color: var(--white);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            color: var(--white);
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.875rem;
+            color: var(--gray);
+        }
+
+        /* Responsive */
         @media (max-width: 992px) {
-            .container {
-                padding: 0 20px;
+            .main-nav {
+                display: none;
             }
             
-            nav a {
-                padding: 10px 15px;
-                font-size: 14px;
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .hero .container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .hero-content {
+                padding-right: 0;
+                margin-bottom: 3rem;
+            }
+            
+            .hero-buttons {
+                justify-content: center;
+            }
+            
+            .dashboard-nav ul {
+                flex-wrap: wrap;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .section {
+                padding: 3rem 0;
+            }
+            
+            h1 {
+                font-size: 2.25rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 1rem;
             }
             
             .profile-info {
@@ -791,162 +1173,325 @@
             
             .profile-avatar {
                 margin-right: 0;
-                margin-bottom: 20px;
+                margin-bottom: 1.5rem;
+            }
+            
+            .login-container {
+                padding: 2rem;
             }
         }
 
-        @media (max-width: 768px) {
-            .login-container {
-                margin: 40px auto;
-                padding: 30px;
-            }
-            
-            .form-row {
+        @media (max-width: 576px) {
+            .hero-buttons {
                 flex-direction: column;
-                gap: 15px;
+                gap: 1rem;
             }
             
-            .form-col {
+            .btn {
                 width: 100%;
             }
             
-            .receipt-actions {
+            .top-bar .container {
                 flex-direction: column;
+                gap: 0.5rem;
             }
             
-            .account-details {
-                flex-direction: column;
+            .top-bar a {
+                margin: 0 0.75rem;
             }
             
-            .card-details {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .card-number {
-                margin-bottom: 10px;
-            }
-            
-            nav {
-                flex-wrap: wrap;
-                padding: 8px 0;
-            }
-            
-            nav a {
-                padding: 8px 12px;
-                margin: 4px;
-                font-size: 13px;
-            }
-            
-            .section {
-                padding: 20px;
+            .offers-grid,
+            .features-grid {
+                grid-template-columns: 1fr;
             }
             
             .dark-mode-toggle {
                 width: 50px;
                 height: 50px;
-                bottom: 20px;
-                right: 20px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .login-container {
-                margin: 20px auto;
-                padding: 20px;
-            }
-            
-            .account-balance {
-                font-size: 28px;
-            }
-            
-            h2 {
-                font-size: 24px;
-            }
-            
-            .profile-details {
-                min-width: 100%;
-            }
-            
-            .rib-info {
-                font-size: 16px;
-                padding: 10px;
-            }
-            
-            .logout-btn {
-                top: 15px;
-                right: 15px;
-                padding: 8px 12px;
-                font-size: 14px;
+                bottom: 1.5rem;
+                right: 1.5rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="marquee">
-        <span>💼 Notre banque est fière d'annoncer sa collaboration stratégique avec la Banque UBA pour mieux servir notre clientèle internationale.</span>
+    <!-- Homepage -->
+    <div id="homepage">
+        <div class="top-bar">
+            <div class="container">
+                <div class="contact-info">
+                    <i class="fas fa-phone-alt"></i> 01 40 14 55 55
+                </div>
+                <div class="top-bar-links">
+                    <a href="#"><i class="fas fa-map-marker-alt"></i> Agences</a>
+                    <a href="#"><i class="fas fa-globe"></i> International</a>
+                    <a href="#"><i class="fas fa-user"></i> Particuliers</a>
+                    <a href="#"><i class="fas fa-briefcase"></i> Professionnels</a>
+                </div>
+            </div>
+        </div>
+
+        <header class="main-header">
+            <div class="container header-container">
+                <div class="logo">
+                    <img src="logobnp.png" alt="BNP Paribas">
+                </div>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="#" class="active">Accueil</a></li>
+                        <li><a href="#">Comptes</a></li>
+                        <li><a href="#">Cartes</a></li>
+                        <li><a href="#">Crédits</a></li>
+                        <li><a href="#">Épargne</a></li>
+                        <li><a href="#">Investissements</a></li>
+                        <li><a href="#">Services</a></li>
+                    </ul>
+                </nav>
+                <div class="auth-buttons">
+                    <button id="show-login" class="btn btn-outline"><i class="fas fa-lock"></i> Connexion</button>
+                    <button class="btn btn-primary"><i class="fas fa-user-plus"></i> Ouvrir un compte</button>
+                </div>
+                <button class="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </header>
+
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>Votre banque, votre avenir</h1>
+                    <p>BNP Paribas vous accompagne dans tous vos projets avec des solutions bancaires innovantes et un service personnalisé.</p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary btn-lg"><i class="fas fa-hand-holding-usd"></i> Demander un crédit</button>
+                        <button class="btn btn-outline btn-lg"><i class="fas fa-piggy-bank"></i> Découvrir nos solutions</button>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Services bancaires">
+                </div>
+            </div>
+        </section>
+
+        <section class="features section">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Nos services bancaires</h2>
+                    <p>Découvrez une gamme complète de services conçus pour répondre à tous vos besoins financiers</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3>Banque mobile</h3>
+                        <p>Gérez vos comptes où que vous soyez avec notre application primée et sécurisée.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        <h3>Cartes bancaires</h3>
+                        <p>Des cartes adaptées à vos besoins avec des avantages exclusifs et une sécurité renforcée.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-home"></i>
+                        </div>
+                        <h3>Crédit immobilier</h3>
+                        <p>Réalisez votre projet immobilier avec nos solutions de financement compétitives.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="offers section">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Nos offres exclusives</h2>
+                    <p>Profitez d'avantages réservés à nos clients</p>
+                </div>
+                <div class="offers-grid">
+                    <div class="offer-card">
+                        <div class="offer-image" style="background-image: url('https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80');">
+                            <div class="offer-tag">Exclusif</div>
+                        </div>
+                        <div class="offer-content">
+                            <h3>Compte Premium</h3>
+                            <p>Accédez à des services haut de gamme, un conseiller dédié et des avantages exclusifs dans le monde entier.</p>
+                            <div class="offer-meta">
+                                <span><i class="fas fa-clock"></i> Offre limitée</span>
+                                <span><i class="fas fa-euro-sign"></i> À partir de 100K€</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="offer-card">
+                        <div class="offer-image" style="background-image: url('https://images.unsplash.com/photo-1535320903710-d993d3d77d29?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80');">
+                            <div class="offer-tag">Nouveau</div>
+                        </div>
+                        <div class="offer-content">
+                            <h3>Assurance Vie Excellence</h3>
+                            <p>Notre contrat multisupport avec 150 supports de placement et des frais réduits à 0.30%.</p>
+                            <div class="offer-meta">
+                                <span><i class="fas fa-star"></i> Clientèle privée</span>
+                                <span><i class="fas fa-euro-sign"></i> À partir de 1M€</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-container">
+                    <div class="footer-column">
+                        <h3>BNP Paribas</h3>
+                        <ul>
+                            <li><a href="#">Qui sommes-nous</a></li>
+                            <li><a href="#">Engagements</a></li>
+                            <li><a href="#">Carrières</a></li>
+                            <li><a href="#">Actualités</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h3>Services</h3>
+                        <ul>
+                            <li><a href="#">Particuliers</a></li>
+                            <li><a href="#">Professionnels</a></li>
+                            <li><a href="#">Entreprises</a></li>
+                            <li><a href="#">Institutionnels</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h3>Aide & Contact</h3>
+                        <ul>
+                            <li><a href="#">Contactez-nous</a></li>
+                            <li><a href="#">FAQ</a></li>
+                            <li><a href="#">Tarifs</a></li>
+                            <li><a href="#">Sécurité</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h3>Réseaux sociaux</h3>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>© 2023 BNP Paribas. Tous droits réservés. | <a href="#">Mentions légales</a> | <a href="#">Protection des données</a> | <a href="#">Cookies</a></p>
+                </div>
+            </div>
+        </footer>
     </div>
 
-    <div id="login-section" class="section active">
-        <div class="login-container">
-            <h2><i class="fas fa-lock"></i> Connexion à votre espace client</h2>
-            <div class="form-group">
-                <label for="username">Identifiant</label>
-                <input type="text" id="username" placeholder="Votre identifiant">
-            </div>
-            <div class="form-group">
-                <label for="password">Mot de passe</label>
-                <input type="password" id="password" placeholder="Votre mot de passe">
-            </div>
-            <button id="login-btn" class="btn">Se connecter</button>
-            <div class="error-message" id="login-error"></div>
-            <div style="text-align: center; margin-top: 20px;">
-                <a href="#" id="forgot-password" style="color: var(--primary-color);">Mot de passe oublié ?</a>
+    <!-- Login Section -->
+    <div id="login-section" class="login-section">
+        <div class="container">
+            <div class="login-container">
+                <h2><i class="fas fa-lock"></i> Connexion à votre espace client</h2>
+                <div class="form-group">
+                    <label for="username">Identifiant</label>
+                    <input type="text" id="username" placeholder="Votre identifiant">
+                </div>
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
+                    <input type="password" id="password" placeholder="Votre mot de passe">
+                </div>
+                <button id="login-btn" class="btn btn-primary">Se connecter</button>
+                <div class="error-message" id="login-error"></div>
+                <div style="text-align: center; margin-top: 1.5rem;">
+                    <a href="#" id="forgot-password" style="color: var(--primary);">Mot de passe oublié ?</a>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="main-section" class="section" style="display: none;">
-        <header>
-            <div class="logo">
-                <img src="logobnp1.png"></i> 
+    <!-- Dashboard -->
+    <div id="dashboard" class="dashboard">
+        <header class="dashboard-header">
+            <div class="container">
+                <div class="logo">
+                    <img src="logobnp1.png" alt="BNP Paribas" style="filter: brightness(0) invert(1);">
+                </div>
+                <div class="user-menu">
+                    <div class="user-avatar">MAJ</div>
+                    <span class="user-name">Minouare A. Javelo</span>
+                    <button id="logout-btn" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Déconnexion
+                    </button>
+                </div>
             </div>
-            <button id="logout-btn" class="logout-btn">
-                <i class="fas fa-sign-out-alt"></i> Déconnexion
-            </button>
         </header>
 
-        <nav>
-            <a href="#" class="nav-link" data-section="dashboard"><i class="fas fa-home"></i> Accueil</a>
-            <a href="#" class="nav-link" data-section="accounts"><i class="fas fa-wallet"></i> Comptes</a>
-            <a href="#" class="nav-link" data-section="cards"><i class="fas fa-credit-card"></i> Cartes</a>
-            <a href="#" class="nav-link active" data-section="transfers"><i class="fas fa-exchange-alt"></i> Virements</a>
-            <a href="#" class="nav-link" data-section="savings"><i class="fas fa-piggy-bank"></i> Épargne</a>
-            <a href="#" class="nav-link" data-section="messages"><i class="fas fa-envelope"></i> Messagerie <span id="message-notification" class="notification-badge" style="display: none;">1</span></a>
-            <a href="#" class="nav-link" data-section="profile"><i class="fas fa-user"></i> Profil</a>
+        <nav class="dashboard-nav">
+            <div class="container">
+                <ul>
+                    <li>
+                        <a href="#" class="nav-link active" data-section="dashboard">
+                            <i class="fas fa-home"></i> Accueil
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link" data-section="accounts">
+                            <i class="fas fa-wallet"></i> Comptes
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link" data-section="cards">
+                            <i class="fas fa-credit-card"></i> Cartes
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link" data-section="transfers">
+                            <i class="fas fa-exchange-alt"></i> Virements
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link" data-section="savings">
+                            <i class="fas fa-piggy-bank"></i> Épargne
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link" data-section="messages">
+                            <i class="fas fa-envelope"></i> Messagerie
+                            <span id="message-notification" class="notification-badge" style="display: none;">1</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link" data-section="profile">
+                            <i class="fas fa-user"></i> Profil
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </nav>
 
-        <div class="container">
-            <!-- Dashboard Section -->
-            <div id="dashboard-section" class="section active">
-                <h2><i class="fas fa-home"></i> Tableau de bord</h2>
-                <div class="account-card">
-                    <h3><i class="fas fa-wallet"></i> Compte Principal</h3>
-                    <div class="account-balance">13,750,000.00 €</div>
-                    <div class="account-details">
-                        <span><i class="fas fa-user"></i> Titulaire: Minouare Angelo Javelo</span>
-                        <span><i class="fas fa-id-card"></i> IBAN: FR76 3000 1007 1600 0000 0000 123</span>
-                        <span><i class="fas fa-calendar-alt"></i> Dernière opération: 12/07/2023</span>
+        <main class="dashboard-content">
+            <div class="container">
+                <!-- Dashboard Section -->
+                <div id="dashboard-section" class="dashboard-section active">
+                    <h2><i class="fas fa-home"></i> Tableau de bord</h2>
+                    <div class="account-card">
+                        <h3><i class="fas fa-wallet"></i> Compte Principal</h3>
+                        <div class="account-balance balance-pulse">1,375,000.00 €</div>
+                        <div class="account-details">
+                            <span><i class="fas fa-user"></i> Titulaire: Minouare Angelo Javelo</span>
+                            <span><i class="fas fa-id-card"></i> IBAN: FR76 3000 1007 1600 0000 0000 123</span>
+                            <span><i class="fas fa-calendar-alt"></i> Dernière opération: 12/07/2023</span>
+                        </div>
                     </div>
-                </div>
 
-                <div class="chart-container">
-                    <canvas id="spending-chart"></canvas>
-                </div>
+                    <div class="chart-container">
+                        <canvas id="spending-chart"></canvas>
+                    </div>
 
-                <div style="margin-top: 40px;">
-                    <h3><i class="fas fa-history"></i> Dernières opérations</h3>
                     <div class="transaction-list">
+                        <h3><i class="fas fa-history"></i> Dernières opérations</h3>
                         <div class="transaction-item">
                             <div>
                                 <div class="transaction-description">Virement reçu - Transaction commerciale</div>
@@ -970,112 +1515,96 @@
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Accounts Section -->
-            <div id="accounts-section" class="section">
-                <h2><i class="fas fa-wallet"></i> Mes Comptes</h2>
-                <div class="account-card">
-                    <h3><i class="fas fa-wallet"></i> Compte Principal</h3>
-                    <div class="account-balance">13,750,000.00 €</div>
-                    <div class="account-details">
-                        <span><i class="fas fa-user"></i> Titulaire: Minouare Angelo Javelo</span>
-                        <span><i class="fas fa-id-card"></i> IBAN: FR76 3000 1007 1600 0000 0000 123</span>
-                        <span><i class="fas fa-calendar-alt"></i> Dernière opération: 12/07/2023</span>
-                    </div>
-                </div>
-
-                <div class="account-card">
-                    <h3><i class="fas fa-piggy-bank"></i> Compte Épargne</h3>
-                    <div class="account-balance">5,780,500.00 €</div>
-                    <div class="account-details">
-                        <span><i class="fas fa-id-card"></i> IBAN: FR76 3000 1007 1600 0000 0000 456</span>
-                        <span><i class="fas fa-percentage"></i> Taux: 1.75%</span>
-                    </div>
-                </div>
-
-                <div class="account-card">
-                    <h3><i class="fas fa-briefcase"></i> Compte Professionnel</h3>
-                    <div class="account-balance">8,450,000.00 €</div>
-                    <div class="account-details">
-                        <span><i class="fas fa-id-card"></i> IBAN: FR76 3000 1007 1600 0000 0000 789</span>
-                        <span><i class="fas fa-calendar-alt"></i> Dernière opération: 11/07/2023</span>
-                    </div>
-                </div>
-
-                <div class="transaction-list">
-                    <h3><i class="fas fa-history"></i> Historique des opérations</h3>
-                    <div class="transaction-item">
-                        <div>
-                            <div class="transaction-description">Virement reçu - Transaction commerciale</div>
-                            <div class="transaction-date">10/07/2023</div>
+                <!-- Accounts Section -->
+                <div id="accounts-section" class="dashboard-section">
+                    <h2><i class="fas fa-wallet"></i> Mes Comptes</h2>
+                    <div class="account-card">
+                        <h3><i class="fas fa-wallet"></i> Compte Principal</h3>
+                        <div class="account-balance">1,375,000.00 €</div>
+                        <div class="account-details">
+                            <span><i class="fas fa-user"></i> Titulaire: Minouare Angelo Javelo</span>
+                            <span><i class="fas fa-id-card"></i> IBAN: FR76 3000 1007 1600 0000 0000 123</span>
+                            <span><i class="fas fa-calendar-alt"></i> Dernière opération: 12/07/2023</span>
                         </div>
-                        <div class="transaction-amount positive">+250,000.00 €</div>
                     </div>
-                    <div class="transaction-item">
-                        <div>
-                            <div class="transaction-description">Prélèvement fiscal</div>
-                            <div class="transaction-date">05/07/2023</div>
-                        </div>
-                        <div class="transaction-amount negative">-85,300.00 €</div>
-                    </div>
-                    <div class="transaction-item">
-                        <div>
-                            <div class="transaction-description">Investissement immobilier</div>
-                            <div class="transaction-date">03/07/2023</div>
-                        </div>
-                        <div class="transaction-amount negative">-1,250,000.00 €</div>
-                    </div>
-                    <div class="transaction-item">
-                        <div>
-                            <div class="transaction-description">Virement international</div>
-                            <div class="transaction-date">28/06/2023</div>
-                        </div>
-                        <div class="transaction-amount negative">-500,000.00 €</div>
-                    </div>
-                    <div class="transaction-item">
-                        <div>
-                            <div class="transaction-description">Dividendes</div>
-                            <div class="transaction-date">01/06/2023</div>
-                        </div>
-                        <div class="transaction-amount positive">+175,000.00 €</div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Cards Section -->
-            <div id="cards-section" class="section">
-                <h2><i class="fas fa-credit-card"></i> Mes Cartes</h2>
-                <div class="card">
-                    <h3><i class="fas fa-credit-card"></i> Carte Visa Infinite</h3>
-                    <div class="card-number">•••• •••• •••• 1234</div>
-                    <div class="card-details">
-                        <div class="card-expiry"><i class="fas fa-calendar-alt"></i> Expire: 12/25</div>
-                        <div class="card-limit"><i class="fas fa-chart-line"></i> Plafond: 50,000.00 €/mois</div>
+                    <div class="account-card">
+                        <h3><i class="fas fa-piggy-bank"></i> Compte Épargne</h3>
+                        <div class="account-balance">5,780,500.00 €</div>
+                        <div class="account-details">
+                            <span><i class="fas fa-id-card"></i> IBAN: FR76 3000 1007 1600 0000 0000 456</span>
+                            <span><i class="fas fa-percentage"></i> Taux: 1.75%</span>
+                        </div>
                     </div>
-                </div>
 
-                <div class="card">
-                    <h3><i class="fas fa-credit-card"></i> Carte Gold</h3>
-                    <div class="card-number">•••• •••• •••• 5678</div>
-                    <div class="card-details">
-                        <div class="card-expiry"><i class="fas fa-calendar-alt"></i> Expire: 08/24</div>
-                        <div class="card-limit"><i class="fas fa-chart-line"></i> Plafond: 15,000.00 €/jour</div>
+                    <div class="account-card">
+                        <h3><i class="fas fa-briefcase"></i> Compte Professionnel</h3>
+                        <div class="account-balance">8,450,000.00 €</div>
+                        <div class="account-details">
+                            <span><i class="fas fa-id-card"></i> IBAN: FR76 3000 1007 1600 0000 0000 789</span>
+                            <span><i class="fas fa-calendar-alt"></i> Dernière opération: 11/07/2023</span>
+                        </div>
                     </div>
-                </div>
 
-                <div class="card">
-                    <h3><i class="fas fa-credit-card"></i> Carte Affaires</h3>
-                    <div class="card-number">•••• •••• •••• 9012</div>
-                    <div class="card-details">
-                        <div class="card-expiry"><i class="fas fa-calendar-alt"></i> Expire: 05/26</div>
-                        <div class="card-limit"><i class="fas fa-chart-line"></i> Plafond: 100,000.00 €/mois</div>
-                    </div>
-                </div>
-
-                <div style="margin-top: 40px;">
-                    <h3><i class="fas fa-history"></i> Opérations récentes</h3>
                     <div class="transaction-list">
+                        <h3><i class="fas fa-history"></i> Historique des opérations</h3>
+                        <div class="transaction-item">
+                            <div>
+                                <div class="transaction-description">Virement reçu - Transaction commerciale</div>
+                                <div class="transaction-date">10/07/2023</div>
+                            </div>
+                            <div class="transaction-amount positive">+250,000.00 €</div>
+                        </div>
+                        <div class="transaction-item">
+                            <div>
+                                <div class="transaction-description">Prélèvement fiscal</div>
+                                <div class="transaction-date">05/07/2023</div>
+                            </div>
+                            <div class="transaction-amount negative">-85,300.00 €</div>
+                        </div>
+                        <div class="transaction-item">
+                            <div>
+                                <div class="transaction-description">Investissement immobilier</div>
+                                <div class="transaction-date">03/07/2023</div>
+                            </div>
+                            <div class="transaction-amount negative">-1,250,000.00 €</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cards Section -->
+                <div id="cards-section" class="dashboard-section">
+                    <h2><i class="fas fa-credit-card"></i> Mes Cartes</h2>
+                    <div class="account-card">
+                        <h3><i class="fas fa-credit-card"></i> Carte Visa Infinite</h3>
+                        <div class="account-details">
+                            <span><i class="fas fa-credit-card"></i> Numéro: •••• •••• •••• 1234</span>
+                            <span><i class="fas fa-calendar-alt"></i> Expire: 12/25</span>
+                            <span><i class="fas fa-chart-line"></i> Plafond: 50,000.00 €/mois</span>
+                        </div>
+                    </div>
+
+                    <div class="account-card">
+                        <h3><i class="fas fa-credit-card"></i> Carte Gold</h3>
+                        <div class="account-details">
+                            <span><i class="fas fa-credit-card"></i> Numéro: •••• •••• •••• 5678</span>
+                            <span><i class="fas fa-calendar-alt"></i> Expire: 08/24</span>
+                            <span><i class="fas fa-chart-line"></i> Plafond: 15,000.00 €/jour</span>
+                        </div>
+                    </div>
+
+                    <div class="account-card">
+                        <h3><i class="fas fa-credit-card"></i> Carte Affaires</h3>
+                        <div class="account-details">
+                            <span><i class="fas fa-credit-card"></i> Numéro: •••• •••• •••• 9012</span>
+                            <span><i class="fas fa-calendar-alt"></i> Expire: 05/26</span>
+                            <span><i class="fas fa-chart-line"></i> Plafond: 100,000.00 €/mois</span>
+                        </div>
+                    </div>
+
+                    <div class="transaction-list">
+                        <h3><i class="fas fa-history"></i> Opérations récentes</h3>
                         <div class="transaction-item">
                             <div>
                                 <div class="transaction-description">HOTEL DE PARIS MONTE CARLO</div>
@@ -1099,260 +1628,187 @@
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Transfers Section -->
-            <div id="transfers-section" class="section">
-                <h2><i class="fas fa-exchange-alt"></i> Virements et Paiements</h2>
-                
-                <div class="transfer-form">
-                    <h3><i class="fas fa-money-bill-wave"></i> Effectuer un virement</h3>
-                    <div class="form-row">
-                        <div class="form-col">
-                            <div class="form-group">
-                                <label for="from-account">Depuis le compte</label>
-                                <select id="from-account">
-                                    <option value="main">Compte Principal (13,750,000.00 €)</option>
-                                    <option value="savings">Compte Épargne (5,780,500.00 €)</option>
-                                    <option value="pro">Compte Professionnel (8,450,000.00 €)</option>
-                                </select>
+                <!-- Transfers Section -->
+                <div id="transfers-section" class="dashboard-section">
+                    <h2><i class="fas fa-exchange-alt"></i> Virements et Paiements</h2>
+                    
+                    <div class="account-card">
+                        <h3><i class="fas fa-money-bill-wave"></i> Effectuer un virement</h3>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="from-account">Depuis le compte</label>
+                                    <select id="from-account">
+                                        <option value="main">Compte Principal (13,750,000.00 €)</option>
+                                        <option value="savings">Compte Épargne (5,780,500.00 €)</option>
+                                        <option value="pro">Compte Professionnel (8,450,000.00 €)</option>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-col">
-                            <div class="form-group">
-                                <label for="to-account">Vers le compte</label>
-                                <select id="to-account">
-                                    <option value="internal">Compte interne BNP Paribas</option>
-                                    <option value="external">Compte externe</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group" id="external-account-group" style="display: none;">
-                        <label for="external-account">IBAN du bénéficiaire</label>
-                        <input type="text" id="external-account" placeholder="FR76 XXXX XXXX XXXX XXXX XXXX XXX">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="beneficiary-name">Nom du bénéficiaire</label>
-                        <input type="text" id="beneficiary-name" placeholder="Nom complet du bénéficiaire">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="transfer-amount">Montant</label>
-                        <input type="number" id="transfer-amount" placeholder="0.00 €">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="transfer-reference">IBAN</label>
-                        <input type="text" id="transfer-reference" placeholder="Libellé de l'opération">
-                    </div>
-
-                    <button id="transfer-btn" class="btn"><i class="fas fa-paper-plane"></i> Effectuer le virement</button>
-
-                    <div class="success-message" id="transfer-success">
-                        <i class="fas fa-check-circle"></i> Votre virement a été effectué avec succès.
-                    </div>
-
-                    <div class="error-message" id="transfer-error">
-                        <i class="fas fa-exclamation-circle"></i> Le virement a été rejeté et votre compte a été bloqué pour des raisons de sécurité.
-                    </div>
-
-                    <div id="receipt-section" style="display: none; margin-top: 40px;">
-                        <h3><i class="fas fa-receipt"></i> Reçu de virement</h3>
-                        <div class="card" id="receipt-content">
-                            <div style="text-align: center; margin-bottom: 30px;">
-                                <h3 style="color: var(--primary-color); font-size: 24px;">BNP Paribas</h3>
-                                <p style="font-size: 16px; color: #666;">Reçu de virement bancaire</p>
-                            </div>
-                            
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 16px;">
-                                <span style="font-weight: bold;">Date:</span>
-                                <span id="receipt-date">12/07/2023</span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 16px;">
-                                <span style="font-weight: bold;">De:</span>
-                                <span id="receipt-from">Compte Principal - Minouare Angelo Javelo</span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 16px;">
-                                <span style="font-weight: bold;">À:</span>
-                                <span id="receipt-to">Compte Externe</span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 16px;">
-                                <span style="font-weight: bold;">Bénéficiaire:</span>
-                                <span id="receipt-beneficiary">John Doe</span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 18px;">
-                                <span style="font-weight: bold;">Montant:</span>
-                                <span id="receipt-amount" style="font-weight: bold; color: var(--primary-color);">100,000.00 €</span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 16px;">
-                                <span style="font-weight: bold;">Référence:</span>
-                                <span id="receipt-reference">Remboursement</span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 16px;">
-                                <span style="font-weight: bold;">Nouveau solde:</span>
-                                <span id="receipt-balance">13,650,000.00 €</span>
-                            </div>
-                            
-                            <div style="text-align: center; margin-top: 40px; font-size: 14px; color: #666;">
-                                <p>Merci pour votre confiance. BNP Paribas.</p>
-                                <p>En collaboration avec UBA</p>
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="to-account">Vers le compte</label>
+                                    <select id="to-account">
+                                        <option value="internal">Compte interne BNP Paribas</option>
+                                        <option value="external">Compte externe</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="receipt-actions">
-                            <button id="download-receipt" class="btn">
-                                <i class="fas fa-download"></i> Télécharger le reçu
-                            </button>
-                            <button id="email-receipt" class="btn btn-secondary">
-                                <i class="fas fa-envelope"></i> Envoyer par email
-                            </button>
+                        <div class="form-group" id="external-account-group" style="display: none;">
+                            <label for="external-account">IBAN du bénéficiaire</label>
+                            <input type="text" id="external-account" placeholder="FR76 XXXX XXXX XXXX XXXX XXXX XXX">
                         </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Savings Section -->
-            <div id="savings-section" class="section">
-                <h2><i class="fas fa-piggy-bank"></i> Épargne et Placements</h2>
-                
-                <div class="account-card">
-                    <h3><i class="fas fa-chart-line"></i> Compte Épargne</h3>
-                    <div class="account-balance">5,780,500.00 €</div>
-                    <div class="account-details">
-                        <span><i class="fas fa-percentage"></i> Taux: 1.75%</span>
-                        <span><i class="fas fa-coins"></i> Intérêts annuels estimés: 101,158.75 €</span>
-                    </div>
-                </div>
-
-                <div class="account-card">
-                    <h3><i class="fas fa-building"></i> Plan Épargne Logement</h3>
-                    <div class="account-balance">3,200,000.00 €</div>
-                    <div class="account-details">
-                        <span><i class="fas fa-percentage"></i> Taux: 2.25%</span>
-                        <span><i class="fas fa-calendar-alt"></i> Échéance: 12/2025</span>
-                    </div>
-                </div>
-
-                <div style="margin-top: 40px;">
-                    <h3><i class="fas fa-star"></i> Nos offres d'épargne</h3>
-                    <div class="offer-card">
-                        <div class="offer-image">
-                            <i class="fas fa-gem"></i>
-                        </div>
-                        <div class="offer-content">
-                            <h3 class="offer-title">Compte à Terme Premium</h3>
-                            <div class="offer-description">
-                                Bénéficiez de taux avantageux jusqu'à 4.50% pour vos placements à long terme. Garantie en capital et intérêts trimestriels.
-                            </div>
-                            <div class="offer-validity">Offre valable jusqu'au 31/12/2023</div>
-                            <button class="btn" style="margin-top: 15px;"><i class="fas fa-file-signature"></i> Souscrire</button>
-                        </div>
-                    </div>
-
-                    <div class="offer-card">
-                        <div class="offer-image">
-                            <i class="fas fa-shield-alt"></i>
-                        </div>
-                        <div class="offer-content">
-                            <h3 class="offer-title">Assurance Vie Excellence</h3>
-                            <div class="offer-description">
-                                Notre contrat multisupport avec 150 supports de placement et des frais réduits à 0.30% pour les montants supérieurs à 1M€.
-                            </div>
-                            <div class="offer-validity">Offre réservée à notre clientèle privée</div>
-                            <button class="btn" style="margin-top: 15px;"><i class="fas fa-file-signature"></i> Souscrire</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Messages Section -->
-            <div id="messages-section" class="section">
-                <h2><i class="fas fa-envelope"></i> Messagerie Sécurisée</h2>
-                
-                <div class="message-item">
-                    <div class="message-title">Notification importante : Blocage de compte</div>
-                    <div class="message-date">Aujourd'hui, 14:32</div>
-                    <div class="message-content">
-                        <p>Cher client,</p>
-                        <p>Nous avons constaté des frais fiscaux impayés sur votre compte. Conformément à nos politiques de sécurité, votre compte a été temporairement bloqué.</p>
-                        <p>Veuillez contacter immédiatement notre service clientèle au 01 40 14 55 55 pour régulariser votre situation.</p>
-                        <p>Cordialement,<br>Le service sécurité de BNP Paribas</p>
-                    </div>
-                </div>
-
-                <div class="message-item">
-                    <div class="message-title">Votre relevé de compte est disponible</div>
-                    <div class="message-date">10/07/2023</div>
-                    <div class="message-content">
-                        Votre relevé de compte pour le mois de juin 2023 est maintenant disponible dans votre espace client. Vous pouvez le télécharger au format PDF.
-                    </div>
-                </div>
-
-                <div class="message-item">
-                    <div class="message-title">Mise à jour de nos conditions générales</div>
-                    <div class="message-date">05/07/2023</div>
-                    <div class="message-content">
-                        Nous vous informons que nos conditions générales ont été mises à jour. Vous pouvez consulter les nouvelles versions sur notre site internet.
-                    </div>
-                </div>
-            </div>
-
-            <!-- Profile Section -->
-            <div id="profile-section" class="section">
-                <h2><i class="fas fa-user"></i> Mon Profil</h2>
-                
-                <div class="profile-info">
-                    <div class="profile-avatar">
-                        MAJ
-                    </div>
-                    <div class="profile-details">
-                        <h3>Minouare Angelo Javelo</h3>
-                        <p><i class="fas fa-user-tie"></i> Client Privé</p>
-                        <p><i class="fas fa-envelope"></i> Email: m.a.javelo@example.com</p>
-                        <p><i class="fas fa-phone"></i> Téléphone: +33 6 12 34 56 78</p>
-                        <p><i class="fas fa-map-marker-alt"></i> Adresse: 12 Avenue des Champs-Élysées, 75008 Paris</p>
-                        <p><i class="fas fa-calendar-alt"></i> Client depuis: 15/03/2005</p>
-                    </div>
-                </div>
-
-                <div class="settings-form">
-                    <h3><i class="fas fa-cog"></i> Paramètres du compte</h3>
-                    <div class="form-row">
                         <div class="form-group">
-                            <label for="first-name">Prénom</label>
-                            <input type="text" id="first-name" value="Minouare Angelo">
+                            <label for="beneficiary-name">Nom du bénéficiaire</label>
+                            <input type="text" id="beneficiary-name" placeholder="Nom complet du bénéficiaire">
                         </div>
+
                         <div class="form-group">
-                            <label for="last-name">Nom</label>
-                            <input type="text" id="last-name" value="Javelo">
+                            <label for="transfer-amount">Montant</label>
+                            <input type="number" id="transfer-amount" placeholder="0.00 €">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="transfer-reference">IBAN</label>
+                            <input type="text" id="transfer-reference" placeholder="Libellé de l'opération">
+                        </div>
+
+                        <button id="transfer-btn" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Effectuer le virement</button>
+
+                        <div class="error-message" id="transfer-error">
+                            <i class="fas fa-exclamation-circle"></i> Le virement a été rejeté et votre compte a été bloqué pour des raisons de sécurité.
                         </div>
                     </div>
-
-                    <div class="form-group">
-                        <label for="email">Adresse email</label>
-                        <input type="email" id="email" value="m.a.javelo@example.com">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="phone">Téléphone</label>
-                        <input type="tel" id="phone" value="+33 6 12 34 56 78">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="address">Adresse</label>
-                        <input type="text" id="address" value="12 Avenue des Champs-Élysées, 75008 Paris">
-                    </div>
-
-                    <button class="btn"><i class="fas fa-save"></i> Mettre à jour les informations</button>
                 </div>
 
-                <div style="margin-top: 40px;">
-                    <h3><i class="fas fa-shield-alt"></i> Sécurité</h3>
-                    <div class="card">
-                        <h3><i class="fas fa-key"></i> Changer le mot de passe</h3>
+                <!-- Savings Section -->
+                <div id="savings-section" class="dashboard-section">
+                    <h2><i class="fas fa-piggy-bank"></i> Épargne et Placements</h2>
+                    
+                    <div class="account-card">
+                        <h3><i class="fas fa-chart-line"></i> Compte Épargne</h3>
+                        <div class="account-balance">5,780,500.00 €</div>
+                        <div class="account-details">
+                            <span><i class="fas fa-percentage"></i> Taux: 1.75%</span>
+                            <span><i class="fas fa-coins"></i> Intérêts annuels estimés: 101,158.75 €</span>
+                        </div>
+                    </div>
+
+                    <div class="account-card">
+                        <h3><i class="fas fa-building"></i> Plan Épargne Logement</h3>
+                        <div class="account-balance">3,200,000.00 €</div>
+                        <div class="account-details">
+                            <span><i class="fas fa-percentage"></i> Taux: 2.25%</span>
+                            <span><i class="fas fa-calendar-alt"></i> Échéance: 12/2025</span>
+                        </div>
+                    </div>
+
+                    <div class="account-card">
+                        <h3><i class="fas fa-star"></i> Nos offres d'épargne</h3>
+                        <div class="account-details">
+                            <p>Découvrez nos solutions d'épargne et de placement adaptées à vos besoins.</p>
+                        </div>
+                        <div style="margin-top: 1.5rem;">
+                            <button class="btn btn-primary"><i class="fas fa-search"></i> Découvrir nos offres</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Messages Section -->
+                <div id="messages-section" class="dashboard-section">
+                    <h2><i class="fas fa-envelope"></i> Messagerie Sécurisée</h2>
+                    
+                    <div class="account-card">
+                        <div class="message-item">
+                            <div class="message-title">Notification importante : Blocage de compte</div>
+                            <div class="message-date">Aujourd'hui, 14:32</div>
+                            <div class="message-content">
+                                <p>Cher client,</p>
+                                <p>Nous avons constaté des frais fiscaux impayés sur votre compte. Conformément à nos politiques de sécurité, votre compte a été temporairement bloqué.</p>
+                                <p>Veuillez contacter immédiatement notre service clientèle au 01 40 14 55 55 pour régulariser votre situation.</p>
+                                <p>Cordialement,<br>Le service sécurité de BNP Paribas</p>
+                            </div>
+                        </div>
+
+                        <div class="message-item">
+                            <div class="message-title">Votre relevé de compte est disponible</div>
+                            <div class="message-date">10/07/2023</div>
+                            <div class="message-content">
+                                Votre relevé de compte pour le mois de juin 2023 est maintenant disponible dans votre espace client. Vous pouvez le télécharger au format PDF.
+                            </div>
+                        </div>
+
+                        <div class="message-item">
+                            <div class="message-title">Mise à jour de nos conditions générales</div>
+                            <div class="message-date">05/07/2023</div>
+                            <div class="message-content">
+                                Nous vous informons que nos conditions générales ont été mises à jour. Vous pouvez consulter les nouvelles versions sur notre site internet.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Section -->
+                <div id="profile-section" class="dashboard-section">
+                    <h2><i class="fas fa-user"></i> Mon Profil</h2>
+                    
+                    <div class="account-card">
+                        <div class="profile-info">
+                            <div class="profile-avatar">
+                                MAJ
+                            </div>
+                            <div class="profile-details">
+                                <h3>Minouare Angelo Javelo</h3>
+                                <p><i class="fas fa-user-tie"></i> Client Privé</p>
+                                <p><i class="fas fa-envelope"></i> Email: m.a.javelo@example.com</p>
+                                <p><i class="fas fa-phone"></i> Téléphone: +33 6 12 34 56 78</p>
+                                <p><i class="fas fa-map-marker-alt"></i> Adresse: 12 Avenue des Champs-Élysées, 75008 Paris</p>
+                                <p><i class="fas fa-calendar-alt"></i> Client depuis: 15/03/2005</p>
+                            </div>
+                        </div>
+
+                        <div class="settings-form">
+                            <h3><i class="fas fa-cog"></i> Paramètres du compte</h3>
+                            <div class="form-row">
+                                <div class="form-col">
+                                    <div class="form-group">
+                                        <label for="first-name">Prénom</label>
+                                        <input type="text" id="first-name" value="Minouare Angelo">
+                                    </div>
+                                </div>
+                                <div class="form-col">
+                                    <div class="form-group">
+                                        <label for="last-name">Nom</label>
+                                        <input type="text" id="last-name" value="Javelo">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">Adresse email</label>
+                                <input type="email" id="email" value="m.a.javelo@example.com">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="phone">Téléphone</label>
+                                <input type="tel" id="phone" value="+33 6 12 34 56 78">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="address">Adresse</label>
+                                <input type="text" id="address" value="12 Avenue des Champs-Élysées, 75008 Paris">
+                            </div>
+
+                            <button class="btn btn-primary"><i class="fas fa-save"></i> Mettre à jour les informations</button>
+                        </div>
+                    </div>
+
+                    <div class="account-card" style="margin-top: 2rem;">
+                        <h3><i class="fas fa-shield-alt"></i> Sécurité</h3>
                         <div class="form-group">
                             <label for="current-password">Mot de passe actuel</label>
                             <input type="password" id="current-password">
@@ -1365,98 +1821,176 @@
                             <label for="confirm-password">Confirmer le nouveau mot de passe</label>
                             <input type="password" id="confirm-password">
                         </div>
-                        <button class="btn"><i class="fas fa-key"></i> Changer le mot de passe</button>
+                        <button class="btn btn-primary"><i class="fas fa-key"></i> Changer le mot de passe</button>
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
 
-    <div class="dark-mode-toggle" id="dark-mode-toggle">
+    <!-- Dark Mode Toggle -->
+    <button class="dark-mode-toggle" id="dark-mode-toggle">
         <i class="fas fa-moon"></i>
-    </div>
+    </button>
 
     <script>
-        // Login functionality
-        document.getElementById('login-btn').addEventListener('click', function() {
+        // DOM Elements
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const showLoginBtn = document.getElementById('show-login');
+        const loginBtn = document.getElementById('login-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const homepage = document.getElementById('homepage');
+        const loginSection = document.getElementById('login-section');
+        const dashboard = document.getElementById('dashboard');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const dashboardSections = document.querySelectorAll('.dashboard-section');
+        const toAccountSelect = document.getElementById('to-account');
+        const externalAccountGroup = document.getElementById('external-account-group');
+        const transferBtn = document.getElementById('transfer-btn');
+        const transferError = document.getElementById('transfer-error');
+        const messageNotification = document.getElementById('message-notification');
+
+        // Dark Mode Toggle
+        darkModeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const icon = darkModeToggle.querySelector('i');
+            
+            if (document.body.classList.contains('dark-mode')) {
+                icon.classList.replace('fa-moon', 'fa-sun');
+                anime({
+                    targets: darkModeToggle,
+                    rotate: 360,
+                    duration: 800,
+                    easing: 'easeOutExpo'
+                });
+            } else {
+                icon.classList.replace('fa-sun', 'fa-moon');
+                anime({
+                    targets: darkModeToggle,
+                    rotate: -360,
+                    duration: 800,
+                    easing: 'easeOutExpo'
+                });
+            }
+        });
+
+        // Show Login Page
+        showLoginBtn.addEventListener('click', () => {
+            homepage.style.display = 'none';
+            loginSection.style.display = 'block';
+            anime({
+                targets: '.login-container',
+                opacity: [0, 1],
+                translateY: [20, 0],
+                duration: 600,
+                easing: 'easeOutExpo'
+            });
+        });
+
+        // Login Functionality
+        loginBtn.addEventListener('click', () => {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             const errorElement = document.getElementById('login-error');
             
             if (username === '20252607' && password === 'JAVE3536') {
-                document.getElementById('login-section').style.display = 'none';
-                document.getElementById('main-section').style.display = 'block';
+                loginSection.style.display = 'none';
+                dashboard.style.display = 'block';
                 initializeDashboard();
+                
+                // Add pulse animation to account balance
+                const balanceElement = document.querySelector('.account-balance');
+                balanceElement.classList.add('balance-pulse');
+                
+                // Smooth transition
+                anime({
+                    targets: dashboard,
+                    opacity: [0, 1],
+                    duration: 800,
+                    easing: 'easeOutExpo'
+                });
             } else {
                 errorElement.textContent = 'Identifiant ou mot de passe incorrect';
                 errorElement.style.display = 'block';
+                
+                // Shake animation for error
+                anime({
+                    targets: '.login-container',
+                    translateX: [-10, 10, -10, 10, 0],
+                    duration: 600,
+                    elasticity: 0
+                });
             }
         });
-        
-        document.getElementById('forgot-password').addEventListener('click', function(e) {
-            e.preventDefault();
-            alert('Un email de réinitialisation a été envoyé à l\'adresse associée à votre compte.');
-        });
-        
-        // Navigation
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const sectionId = this.getAttribute('data-section') + '-section';
-                
-                document.querySelectorAll('.section').forEach(section => {
-                    section.classList.remove('active');
-                });
-                
-                document.getElementById(sectionId).classList.add('active');
-                
-                document.querySelectorAll('.nav-link').forEach(navLink => {
-                    navLink.classList.remove('active');
-                });
-                
-                this.classList.add('active');
-            });
-        });
-        
-        // Logout
-        document.getElementById('logout-btn').addEventListener('click', function() {
-            document.getElementById('main-section').style.display = 'none';
-            document.getElementById('login-section').style.display = 'block';
+
+        // Logout Functionality
+        logoutBtn.addEventListener('click', () => {
+            dashboard.style.display = 'none';
+            homepage.style.display = 'block';
             document.getElementById('username').value = '';
             document.getElementById('password').value = '';
-        });
-        
-        // Dark mode toggle
-        document.getElementById('dark-mode-toggle').addEventListener('click', function() {
-            document.body.classList.toggle('dark-mode');
-            const icon = this.querySelector('i');
             
-            if (document.body.classList.contains('dark-mode')) {
-                icon.classList.remove('fa-moon');
-                icon.classList.add('fa-sun');
-            } else {
-                icon.classList.remove('fa-sun');
-                icon.classList.add('fa-moon');
+            // Remove pulse animation
+            const balanceElement = document.querySelector('.account-balance');
+            if (balanceElement) {
+                balanceElement.classList.remove('balance-pulse');
             }
         });
-        
-        // Transfer form
-        document.getElementById('to-account').addEventListener('change', function() {
-            const externalGroup = document.getElementById('external-account-group');
-            
-            if (this.value === 'external') {
-                externalGroup.style.display = 'block';
+
+        // Dashboard Navigation
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const sectionId = link.getAttribute('data-section') + '-section';
+                
+                // Update active nav link
+                navLinks.forEach(navLink => navLink.classList.remove('active'));
+                link.classList.add('active');
+                
+                // Show corresponding section
+                dashboardSections.forEach(section => section.classList.remove('active'));
+                document.getElementById(sectionId).classList.add('active');
+                
+                // Smooth transition
+                anime({
+                    targets: '#' + sectionId,
+                    opacity: [0, 1],
+                    translateY: [20, 0],
+                    duration: 400,
+                    easing: 'easeOutExpo'
+                });
+            });
+        });
+
+        // Transfer Form - External Account Toggle
+        toAccountSelect.addEventListener('change', () => {
+            if (toAccountSelect.value === 'external') {
+                externalAccountGroup.style.display = 'block';
+                anime({
+                    targets: '#external-account-group',
+                    opacity: [0, 1],
+                    height: ['0px', 'auto'],
+                    duration: 400,
+                    easing: 'easeOutExpo'
+                });
             } else {
-                externalGroup.style.display = 'none';
+                anime({
+                    targets: '#external-account-group',
+                    opacity: [1, 0],
+                    height: ['auto', '0px'],
+                    duration: 400,
+                    easing: 'easeOutExpo',
+                    complete: () => {
+                        externalAccountGroup.style.display = 'none';
+                    }
+                });
             }
         });
-        
-        document.getElementById('transfer-btn').addEventListener('click', function() {
+
+        // Transfer Form Submission
+        transferBtn.addEventListener('click', () => {
             const amount = parseFloat(document.getElementById('transfer-amount').value);
-            const fromAccount = document.getElementById('from-account').value;
-            const toAccount = document.getElementById('to-account').value;
             const beneficiary = document.getElementById('beneficiary-name').value;
-            const reference = document.getElementById('transfer-reference').value;
             
             if (!amount || amount <= 0) {
                 alert('Veuillez entrer un montant valide');
@@ -1469,70 +2003,37 @@
             }
             
             // Simulate transfer rejection and account blocking
-            document.getElementById('transfer-success').style.display = 'none';
-            document.getElementById('transfer-error').style.display = 'block';
-            document.getElementById('receipt-section').style.display = 'none';
+            transferError.style.display = 'flex';
+            messageNotification.style.display = 'flex';
             
-            // Show notification badge on messages
-            document.getElementById('message-notification').style.display = 'flex';
+            // Show error message with animation
+            anime({
+                targets: transferError,
+                opacity: [0, 1],
+                translateY: [20, 0],
+                duration: 600,
+                easing: 'easeOutExpo'
+            });
             
             // In a real application, you would have logic to actually process the transfer
-            // For this demo, we're simulating rejection
             setTimeout(() => {
                 alert('Votre compte a été bloqué pour des raisons de sécurité. Veuillez contacter le service client.');
             }, 1000);
         });
-        
-        // Receipt download
-        document.getElementById('download-receipt').addEventListener('click', function() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            
-            // Add logo
-            doc.setFontSize(18);
-            doc.setTextColor(0, 122, 51); // BNP green
-            doc.text('BNP Paribas', 105, 20, { align: 'center' });
-            
-            doc.setFontSize(14);
-            doc.setTextColor(0, 0, 0);
-            doc.text('Reçu de virement bancaire', 105, 30, { align: 'center' });
-            
-            // Add current date
-            const today = new Date();
-            const dateStr = today.toLocaleDateString('fr-FR');
-            
-            // Add receipt content
-            doc.setFontSize(12);
-            doc.text(`Date: ${dateStr}`, 20, 50);
-            doc.text(`De: Compte Principal - Minouare Angelo Javelo`, 20, 60);
-            doc.text(`À: ${document.getElementById('receipt-to').textContent}`, 20, 70);
-            doc.text(`Bénéficiaire: ${document.getElementById('receipt-beneficiary').textContent}`, 20, 80);
-            
-            doc.setFontSize(14);
-            doc.setTextColor(0, 122, 51);
-            doc.text(`Montant: ${document.getElementById('receipt-amount').textContent}`, 20, 90);
-            
-            doc.setFontSize(12);
-            doc.setTextColor(0, 0, 0);
-            doc.text(`Référence: ${document.getElementById('receipt-reference').textContent}`, 20, 100);
-            doc.text(`Nouveau solde: ${document.getElementById('receipt-balance').textContent}`, 20, 110);
-            
-            // Add footer
-            doc.setFontSize(10);
-            doc.setTextColor(100, 100, 100);
-            doc.text('Merci pour votre confiance. BNP Paribas.', 105, 140, { align: 'center' });
-            doc.text('En collaboration avec UBA', 105, 145, { align: 'center' });
-            
-            // Save the PDF
-            doc.save(`reçu_virement_bnp_${dateStr.replace(/\//g, '-')}.pdf`);
-        });
-        
-        document.getElementById('email-receipt').addEventListener('click', function() {
-            alert('Le reçu a été envoyé à votre adresse email m.a.javelo@example.com.');
-        });
-        
-        // Initialize dashboard chart
+
+        // Initialize Dashboard
         function initializeDashboard() {
+            // Animate cards on load
+            anime({
+                targets: '.account-card',
+                opacity: [0, 1],
+                translateY: [30, 0],
+                delay: anime.stagger(100),
+                duration: 800,
+                easing: 'easeOutExpo'
+            });
+            
+            // Initialize Chart
             const ctx = document.getElementById('spending-chart').getContext('2d');
             new Chart(ctx, {
                 type: 'bar',
@@ -1566,24 +2067,18 @@
                                     return context.raw.toLocaleString('fr-FR') + ' €';
                                 }
                             }
+                        },
+                        legend: {
+                            display: false
                         }
+                    },
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeOutQuart'
                     }
                 }
             });
         }
-        
-        // FAQ functionality
-        document.querySelectorAll('.faq-question').forEach(question => {
-            question.addEventListener('click', function() {
-                this.classList.toggle('active');
-                const answer = this.nextElementSibling;
-                answer.classList.toggle('active');
-                
-                const icon = this.querySelector('i');
-                icon.classList.toggle('fa-chevron-down');
-                icon.classList.toggle('fa-chevron-up');
-            });
-        });
     </script>
 </body>
 </html>
