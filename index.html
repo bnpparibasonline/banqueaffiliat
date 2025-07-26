@@ -1,0 +1,1589 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BNP Paribas - Online Banking</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #007A33;
+            --secondary-color: #ffffff;
+            --accent-color: #f0f0f0;
+            --text-color: #333333;
+            --dark-primary: #005a25;
+            --error-color: #d9534f;
+            --success-color: #5cb85c;
+            --hover-color: rgba(0, 122, 51, 0.1);
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--accent-color);
+            color: var(--text-color);
+            transition: all var(--transition-speed);
+            line-height: 1.6;
+        }
+
+        body.dark-mode {
+            background-color: #121212;
+            --accent-color: #1e1e1e;
+            --text-color: #f0f0f0;
+            --secondary-color: #2d2d2d;
+            --hover-color: rgba(0, 122, 51, 0.3);
+        }
+
+        .marquee {
+            background-color: #000;
+            color: white;
+            padding: 10px 0;
+            white-space: nowrap;
+            overflow: hidden;
+            font-size: 14px;
+            position: relative;
+        }
+
+        .marquee span {
+            display: inline-block;
+            padding-left: 100%;
+            animation: marquee 20s linear infinite;
+        }
+
+        @keyframes marquee {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-100%, 0); }
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: var(--secondary-color);
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+
+        .logo:hover {
+            transform: scale(1.02);
+        }
+
+        .logo i {
+            margin-right: 15px;
+            font-size: 32px;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: var(--dark-primary);
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        nav a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            padding: 12px 24px;
+            margin: 0 5px;
+            border-radius: 6px;
+            transition: all var(--transition-speed);
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        nav a i {
+            margin-right: 8px;
+            font-size: 16px;
+        }
+
+        nav a:hover, nav a.active {
+            background-color: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 30px;
+        }
+
+        .section {
+            display: none;
+            background-color: var(--secondary-color);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            animation: fadeIn 0.5s ease-out;
+            overflow: hidden;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 12px;
+            margin-top: 0;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+        }
+
+        h2 i {
+            margin-right: 12px;
+        }
+
+        .login-container {
+            max-width: 450px;
+            margin: 80px auto;
+            background-color: var(--secondary-color);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            transform: translateY(0);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .login-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: none;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all var(--transition-speed);
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 122, 51, 0.2);
+            outline: none;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: all var(--transition-speed);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn:hover {
+            background-color: var(--dark-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .btn i {
+            margin-right: 10px;
+        }
+
+        .btn-secondary {
+            background-color: #666;
+        }
+
+        .btn-secondary:hover {
+            background-color: #555;
+        }
+
+        .error-message {
+            color: var(--error-color);
+            text-align: center;
+            margin-top: 15px;
+            display: none;
+            padding: 12px;
+            border-radius: 6px;
+            background-color: rgba(217, 83, 79, 0.1);
+            border-left: 4px solid var(--error-color);
+        }
+
+        .account-card {
+            background-color: var(--accent-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--primary-color);
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+        }
+
+        .account-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .account-card h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .account-card h3 i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        .account-balance {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 15px 0;
+            color: var(--text-color);
+        }
+
+        .account-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 15px;
+            color: #666;
+            flex-wrap: wrap;
+        }
+
+        .account-details span {
+            margin-right: 15px;
+            margin-bottom: 5px;
+        }
+
+        .transaction-list {
+            margin-top: 40px;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 16px 0;
+            border-bottom: 1px solid #eee;
+            transition: background-color var(--transition-speed);
+        }
+
+        .transaction-item:hover {
+            background-color: var(--hover-color);
+        }
+
+        .transaction-date {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .transaction-amount {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .positive {
+            color: var(--success-color);
+        }
+
+        .negative {
+            color: var(--error-color);
+        }
+
+        .transfer-form {
+            margin-top: 30px;
+        }
+
+        .form-row {
+            display: flex;
+            margin-bottom: 20px;
+            gap: 20px;
+        }
+
+        .form-col {
+            flex: 1;
+            min-width: 0;
+        }
+
+        select {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all var(--transition-speed);
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+        }
+
+        select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 122, 51, 0.2);
+            outline: none;
+        }
+
+        .success-message {
+            background-color: var(--success-color);
+            color: white;
+            padding: 18px;
+            border-radius: 8px;
+            margin-top: 25px;
+            display: none;
+            align-items: center;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .error-message {
+            background-color: var(--error-color);
+            color: white;
+            padding: 18px;
+            border-radius: 8px;
+            margin-top: 25px;
+            display: none;
+            align-items: center;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .success-message i, .error-message i {
+            margin-right: 12px;
+            font-size: 20px;
+        }
+
+        .receipt-actions {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .receipt-actions .btn {
+            flex: 1;
+        }
+
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--primary-color);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transition: all var(--transition-speed);
+        }
+
+        .dark-mode-toggle:hover {
+            transform: scale(1.1) rotate(15deg);
+        }
+
+        .dark-mode-toggle i {
+            font-size: 24px;
+        }
+
+        .card {
+            background-color: var(--accent-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: transform var(--transition-speed);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .card h3 i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        .card-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .card-number {
+            font-family: monospace;
+            letter-spacing: 2px;
+            font-size: 18px;
+            margin: 10px 0;
+            flex: 1;
+            min-width: 100%;
+        }
+
+        .card-expiry {
+            font-size: 15px;
+            color: #666;
+        }
+
+        .card-limit {
+            font-size: 15px;
+            color: #666;
+        }
+
+        .chart-container {
+            margin-top: 40px;
+            height: 350px;
+            background-color: var(--secondary-color);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .profile-info {
+            display: flex;
+            margin-bottom: 30px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 30px;
+            font-size: 48px;
+            color: var(--primary-color);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform var(--transition-speed);
+        }
+
+        .profile-avatar:hover {
+            transform: scale(1.05);
+        }
+
+        .profile-details {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .profile-details h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .profile-details p {
+            margin: 8px 0;
+            font-size: 16px;
+        }
+
+        .settings-form {
+            margin-top: 30px;
+        }
+
+        .settings-form .form-group {
+            margin-bottom: 20px;
+        }
+
+        .settings-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .settings-form input, .settings-form select {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all var(--transition-speed);
+        }
+
+        .settings-form input:focus, .settings-form select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 122, 51, 0.2);
+            outline: none;
+        }
+
+        .settings-form .form-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .settings-form .form-row .form-group {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .message-item {
+            border-bottom: 1px solid #eee;
+            padding: 20px 0;
+            transition: background-color var(--transition-speed);
+        }
+
+        .message-item:hover {
+            background-color: var(--hover-color);
+        }
+
+        .message-item:last-child {
+            border-bottom: none;
+        }
+
+        .message-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 18px;
+            color: var(--primary-color);
+        }
+
+        .message-date {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .message-content {
+            margin-top: 12px;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .faq-item {
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .faq-question {
+            font-weight: bold;
+            color: var(--primary-color);
+            cursor: pointer;
+            padding: 16px 20px;
+            background-color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all var(--transition-speed);
+        }
+
+        .faq-question:hover {
+            background-color: var(--hover-color);
+        }
+
+        .faq-question i {
+            transition: transform var(--transition-speed);
+        }
+
+        .faq-question.active i {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            padding: 0 20px;
+            background-color: var(--secondary-color);
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height var(--transition-speed), padding var(--transition-speed);
+        }
+
+        .faq-answer.active {
+            max-height: 500px;
+            padding: 20px;
+        }
+
+        .offer-card {
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+        }
+
+        .offer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .offer-image {
+            height: 180px;
+            background-color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            background: linear-gradient(135deg, var(--primary-color), var(--dark-primary));
+        }
+
+        .offer-content {
+            padding: 20px;
+        }
+
+        .offer-title {
+            font-weight: bold;
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 22px;
+        }
+
+        .offer-description {
+            margin-bottom: 20px;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .offer-validity {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .rib-container {
+            background-color: var(--accent-color);
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .rib-info {
+            font-family: monospace;
+            font-size: 18px;
+            line-height: 1.8;
+            padding: 15px;
+            background-color: var(--secondary-color);
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .rib-actions {
+            margin-top: 25px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .logout-btn {
+            background-color: var(--error-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            position: absolute;
+            top: 25px;
+            right: 30px;
+            display: flex;
+            align-items: center;
+            transition: all var(--transition-speed);
+        }
+
+        .logout-btn:hover {
+            background-color: #c9302c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .logout-btn i {
+            margin-right: 8px;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--error-color);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .container {
+                padding: 0 20px;
+            }
+            
+            nav a {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+            
+            .profile-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-avatar {
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                margin: 40px auto;
+                padding: 30px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .form-col {
+                width: 100%;
+            }
+            
+            .receipt-actions {
+                flex-direction: column;
+            }
+            
+            .account-details {
+                flex-direction: column;
+            }
+            
+            .card-details {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .card-number {
+                margin-bottom: 10px;
+            }
+            
+            nav {
+                flex-wrap: wrap;
+                padding: 8px 0;
+            }
+            
+            nav a {
+                padding: 8px 12px;
+                margin: 4px;
+                font-size: 13px;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .dark-mode-toggle {
+                width: 50px;
+                height: 50px;
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                margin: 20px auto;
+                padding: 20px;
+            }
+            
+            .account-balance {
+                font-size: 28px;
+            }
+            
+            h2 {
+                font-size: 24px;
+            }
+            
+            .profile-details {
+                min-width: 100%;
+            }
+            
+            .rib-info {
+                font-size: 16px;
+                padding: 10px;
+            }
+            
+            .logout-btn {
+                top: 15px;
+                right: 15px;
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="marquee">
+        <span>💼 Notre banque est fière d'annoncer sa collaboration stratégique avec la Banque UBA pour mieux servir notre clientèle internationale.</span>
+    </div>
+
+    <div id="login-section" class="section active">
+        <div class="login-container">
+            <h2><i class="fas fa-lock"></i> Connexion à votre espace client</h2>
+            <div class="form-group">
+                <label for="username">Identifiant</label>
+                <input type="text" id="username" placeholder="Votre identifiant">
+            </div>
+            <div class="form-group">
+                <label for="password">Mot de passe</label>
+                <input type="password" id="password" placeholder="Votre mot de passe">
+            </div>
+            <button id="login-btn" class="btn">Se connecter</button>
+            <div class="error-message" id="login-error"></div>
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="#" id="forgot-password" style="color: var(--primary-color);">Mot de passe oublié ?</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-section" class="section" style="display: none;">
+        <header>
+            <div class="logo">
+                <img src="logobnp1.png"></i> 
+            </div>
+            <button id="logout-btn" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Déconnexion
+            </button>
+        </header>
+
+        <nav>
+            <a href="#" class="nav-link" data-section="dashboard"><i class="fas fa-home"></i> Accueil</a>
+            <a href="#" class="nav-link" data-section="accounts"><i class="fas fa-wallet"></i> Comptes</a>
+            <a href="#" class="nav-link" data-section="cards"><i class="fas fa-credit-card"></i> Cartes</a>
+            <a href="#" class="nav-link active" data-section="transfers"><i class="fas fa-exchange-alt"></i> Virements</a>
+            <a href="#" class="nav-link" data-section="savings"><i class="fas fa-piggy-bank"></i> Épargne</a>
+            <a href="#" class="nav-link" data-section="messages"><i class="fas fa-envelope"></i> Messagerie <span id="message-notification" class="notification-badge" style="display: none;">1</span></a>
+            <a href="#" class="nav-link" data-section="profile"><i class="fas fa-user"></i> Profil</a>
+        </nav>
+
+        <div class="container">
+            <!-- Dashboard Section -->
+            <div id="dashboard-section" class="section active">
+                <h2><i class="fas fa-home"></i> Tableau de bord</h2>
+                <div class="account-card">
+                    <h3><i class="fas fa-wallet"></i> Compte Principal</h3>
+                    <div class="account-balance">13,750,000.00 €</div>
+                    <div class="account-details">
+                        <span><i class="fas fa-user"></i> Titulaire: Minouare Angelo Javelo</span>
+                        <span><i class="fas fa-id-card"></i> IBAN: FR76 3000 1007 1600 0000 0000 123</span>
+                        <span><i class="fas fa-calendar-alt"></i> Dernière opération: 12/07/2023</span>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="spending-chart"></canvas>
+                </div>
+
+                <div style="margin-top: 40px;">
+                    <h3><i class="fas fa-history"></i> Dernières opérations</h3>
+                    <div class="transaction-list">
+                        <div class="transaction-item">
+                            <div>
+                                <div class="transaction-description">Virement reçu - Transaction commerciale</div>
+                                <div class="transaction-date">10/07/2023</div>
+                            </div>
+                            <div class="transaction-amount positive">+250,000.00 €</div>
+                        </div>
+                        <div class="transaction-item">
+                            <div>
+                                <div class="transaction-description">Prélèvement fiscal</div>
+                                <div class="transaction-date">05/07/2023</div>
+                            </div>
+                            <div class="transaction-amount negative">-85,300.00 €</div>
+                        </div>
+                        <div class="transaction-item">
+                            <div>
+                                <div class="transaction-description">Investissement immobilier</div>
+                                <div class="transaction-date">03/07/2023</div>
+                            </div>
+                            <div class="transaction-amount negative">-1,250,000.00 €</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Accounts Section -->
+            <div id="accounts-section" class="section">
+                <h2><i class="fas fa-wallet"></i> Mes Comptes</h2>
+                <div class="account-card">
+                    <h3><i class="fas fa-wallet"></i> Compte Principal</h3>
+                    <div class="account-balance">13,750,000.00 €</div>
+                    <div class="account-details">
+                        <span><i class="fas fa-user"></i> Titulaire: Minouare Angelo Javelo</span>
+                        <span><i class="fas fa-id-card"></i> IBAN: FR76 3000 1007 1600 0000 0000 123</span>
+                        <span><i class="fas fa-calendar-alt"></i> Dernière opération: 12/07/2023</span>
+                    </div>
+                </div>
+
+                <div class="account-card">
+                    <h3><i class="fas fa-piggy-bank"></i> Compte Épargne</h3>
+                    <div class="account-balance">5,780,500.00 €</div>
+                    <div class="account-details">
+                        <span><i class="fas fa-id-card"></i> IBAN: FR76 3000 1007 1600 0000 0000 456</span>
+                        <span><i class="fas fa-percentage"></i> Taux: 1.75%</span>
+                    </div>
+                </div>
+
+                <div class="account-card">
+                    <h3><i class="fas fa-briefcase"></i> Compte Professionnel</h3>
+                    <div class="account-balance">8,450,000.00 €</div>
+                    <div class="account-details">
+                        <span><i class="fas fa-id-card"></i> IBAN: FR76 3000 1007 1600 0000 0000 789</span>
+                        <span><i class="fas fa-calendar-alt"></i> Dernière opération: 11/07/2023</span>
+                    </div>
+                </div>
+
+                <div class="transaction-list">
+                    <h3><i class="fas fa-history"></i> Historique des opérations</h3>
+                    <div class="transaction-item">
+                        <div>
+                            <div class="transaction-description">Virement reçu - Transaction commerciale</div>
+                            <div class="transaction-date">10/07/2023</div>
+                        </div>
+                        <div class="transaction-amount positive">+250,000.00 €</div>
+                    </div>
+                    <div class="transaction-item">
+                        <div>
+                            <div class="transaction-description">Prélèvement fiscal</div>
+                            <div class="transaction-date">05/07/2023</div>
+                        </div>
+                        <div class="transaction-amount negative">-85,300.00 €</div>
+                    </div>
+                    <div class="transaction-item">
+                        <div>
+                            <div class="transaction-description">Investissement immobilier</div>
+                            <div class="transaction-date">03/07/2023</div>
+                        </div>
+                        <div class="transaction-amount negative">-1,250,000.00 €</div>
+                    </div>
+                    <div class="transaction-item">
+                        <div>
+                            <div class="transaction-description">Virement international</div>
+                            <div class="transaction-date">28/06/2023</div>
+                        </div>
+                        <div class="transaction-amount negative">-500,000.00 €</div>
+                    </div>
+                    <div class="transaction-item">
+                        <div>
+                            <div class="transaction-description">Dividendes</div>
+                            <div class="transaction-date">01/06/2023</div>
+                        </div>
+                        <div class="transaction-amount positive">+175,000.00 €</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cards Section -->
+            <div id="cards-section" class="section">
+                <h2><i class="fas fa-credit-card"></i> Mes Cartes</h2>
+                <div class="card">
+                    <h3><i class="fas fa-credit-card"></i> Carte Visa Infinite</h3>
+                    <div class="card-number">•••• •••• •••• 1234</div>
+                    <div class="card-details">
+                        <div class="card-expiry"><i class="fas fa-calendar-alt"></i> Expire: 12/25</div>
+                        <div class="card-limit"><i class="fas fa-chart-line"></i> Plafond: 50,000.00 €/mois</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fas fa-credit-card"></i> Carte Gold</h3>
+                    <div class="card-number">•••• •••• •••• 5678</div>
+                    <div class="card-details">
+                        <div class="card-expiry"><i class="fas fa-calendar-alt"></i> Expire: 08/24</div>
+                        <div class="card-limit"><i class="fas fa-chart-line"></i> Plafond: 15,000.00 €/jour</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fas fa-credit-card"></i> Carte Affaires</h3>
+                    <div class="card-number">•••• •••• •••• 9012</div>
+                    <div class="card-details">
+                        <div class="card-expiry"><i class="fas fa-calendar-alt"></i> Expire: 05/26</div>
+                        <div class="card-limit"><i class="fas fa-chart-line"></i> Plafond: 100,000.00 €/mois</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 40px;">
+                    <h3><i class="fas fa-history"></i> Opérations récentes</h3>
+                    <div class="transaction-list">
+                        <div class="transaction-item">
+                            <div>
+                                <div class="transaction-description">HOTEL DE PARIS MONTE CARLO</div>
+                                <div class="transaction-date">12/07/2023</div>
+                            </div>
+                            <div class="transaction-amount negative">-4,560.00 €</div>
+                        </div>
+                        <div class="transaction-item">
+                            <div>
+                                <div class="transaction-description">BOUTIQUE HERMES PARIS</div>
+                                <div class="transaction-date">10/07/2023</div>
+                            </div>
+                            <div class="transaction-amount negative">-12,300.00 €</div>
+                        </div>
+                        <div class="transaction-item">
+                            <div>
+                                <div class="transaction-description">AIR FRANCE FIRST CLASS</div>
+                                <div class="transaction-date">08/07/2023</div>
+                            </div>
+                            <div class="transaction-amount negative">-8,999.00 €</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transfers Section -->
+            <div id="transfers-section" class="section">
+                <h2><i class="fas fa-exchange-alt"></i> Virements et Paiements</h2>
+                
+                <div class="transfer-form">
+                    <h3><i class="fas fa-money-bill-wave"></i> Effectuer un virement</h3>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="from-account">Depuis le compte</label>
+                                <select id="from-account">
+                                    <option value="main">Compte Principal (13,750,000.00 €)</option>
+                                    <option value="savings">Compte Épargne (5,780,500.00 €)</option>
+                                    <option value="pro">Compte Professionnel (8,450,000.00 €)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="to-account">Vers le compte</label>
+                                <select id="to-account">
+                                    <option value="internal">Compte interne BNP Paribas</option>
+                                    <option value="external">Compte externe</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="external-account-group" style="display: none;">
+                        <label for="external-account">IBAN du bénéficiaire</label>
+                        <input type="text" id="external-account" placeholder="FR76 XXXX XXXX XXXX XXXX XXXX XXX">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="beneficiary-name">Nom du bénéficiaire</label>
+                        <input type="text" id="beneficiary-name" placeholder="Nom complet du bénéficiaire">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="transfer-amount">Montant</label>
+                        <input type="number" id="transfer-amount" placeholder="0.00 €">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="transfer-reference">IBAN</label>
+                        <input type="text" id="transfer-reference" placeholder="Libellé de l'opération">
+                    </div>
+
+                    <button id="transfer-btn" class="btn"><i class="fas fa-paper-plane"></i> Effectuer le virement</button>
+
+                    <div class="success-message" id="transfer-success">
+                        <i class="fas fa-check-circle"></i> Votre virement a été effectué avec succès.
+                    </div>
+
+                    <div class="error-message" id="transfer-error">
+                        <i class="fas fa-exclamation-circle"></i> Le virement a été rejeté et votre compte a été bloqué pour des raisons de sécurité.
+                    </div>
+
+                    <div id="receipt-section" style="display: none; margin-top: 40px;">
+                        <h3><i class="fas fa-receipt"></i> Reçu de virement</h3>
+                        <div class="card" id="receipt-content">
+                            <div style="text-align: center; margin-bottom: 30px;">
+                                <h3 style="color: var(--primary-color); font-size: 24px;">BNP Paribas</h3>
+                                <p style="font-size: 16px; color: #666;">Reçu de virement bancaire</p>
+                            </div>
+                            
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 16px;">
+                                <span style="font-weight: bold;">Date:</span>
+                                <span id="receipt-date">12/07/2023</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 16px;">
+                                <span style="font-weight: bold;">De:</span>
+                                <span id="receipt-from">Compte Principal - Minouare Angelo Javelo</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 16px;">
+                                <span style="font-weight: bold;">À:</span>
+                                <span id="receipt-to">Compte Externe</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 16px;">
+                                <span style="font-weight: bold;">Bénéficiaire:</span>
+                                <span id="receipt-beneficiary">John Doe</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 18px;">
+                                <span style="font-weight: bold;">Montant:</span>
+                                <span id="receipt-amount" style="font-weight: bold; color: var(--primary-color);">100,000.00 €</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 16px;">
+                                <span style="font-weight: bold;">Référence:</span>
+                                <span id="receipt-reference">Remboursement</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 16px;">
+                                <span style="font-weight: bold;">Nouveau solde:</span>
+                                <span id="receipt-balance">13,650,000.00 €</span>
+                            </div>
+                            
+                            <div style="text-align: center; margin-top: 40px; font-size: 14px; color: #666;">
+                                <p>Merci pour votre confiance. BNP Paribas.</p>
+                                <p>En collaboration avec UBA</p>
+                            </div>
+                        </div>
+
+                        <div class="receipt-actions">
+                            <button id="download-receipt" class="btn">
+                                <i class="fas fa-download"></i> Télécharger le reçu
+                            </button>
+                            <button id="email-receipt" class="btn btn-secondary">
+                                <i class="fas fa-envelope"></i> Envoyer par email
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Savings Section -->
+            <div id="savings-section" class="section">
+                <h2><i class="fas fa-piggy-bank"></i> Épargne et Placements</h2>
+                
+                <div class="account-card">
+                    <h3><i class="fas fa-chart-line"></i> Compte Épargne</h3>
+                    <div class="account-balance">5,780,500.00 €</div>
+                    <div class="account-details">
+                        <span><i class="fas fa-percentage"></i> Taux: 1.75%</span>
+                        <span><i class="fas fa-coins"></i> Intérêts annuels estimés: 101,158.75 €</span>
+                    </div>
+                </div>
+
+                <div class="account-card">
+                    <h3><i class="fas fa-building"></i> Plan Épargne Logement</h3>
+                    <div class="account-balance">3,200,000.00 €</div>
+                    <div class="account-details">
+                        <span><i class="fas fa-percentage"></i> Taux: 2.25%</span>
+                        <span><i class="fas fa-calendar-alt"></i> Échéance: 12/2025</span>
+                    </div>
+                </div>
+
+                <div style="margin-top: 40px;">
+                    <h3><i class="fas fa-star"></i> Nos offres d'épargne</h3>
+                    <div class="offer-card">
+                        <div class="offer-image">
+                            <i class="fas fa-gem"></i>
+                        </div>
+                        <div class="offer-content">
+                            <h3 class="offer-title">Compte à Terme Premium</h3>
+                            <div class="offer-description">
+                                Bénéficiez de taux avantageux jusqu'à 4.50% pour vos placements à long terme. Garantie en capital et intérêts trimestriels.
+                            </div>
+                            <div class="offer-validity">Offre valable jusqu'au 31/12/2023</div>
+                            <button class="btn" style="margin-top: 15px;"><i class="fas fa-file-signature"></i> Souscrire</button>
+                        </div>
+                    </div>
+
+                    <div class="offer-card">
+                        <div class="offer-image">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="offer-content">
+                            <h3 class="offer-title">Assurance Vie Excellence</h3>
+                            <div class="offer-description">
+                                Notre contrat multisupport avec 150 supports de placement et des frais réduits à 0.30% pour les montants supérieurs à 1M€.
+                            </div>
+                            <div class="offer-validity">Offre réservée à notre clientèle privée</div>
+                            <button class="btn" style="margin-top: 15px;"><i class="fas fa-file-signature"></i> Souscrire</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Messages Section -->
+            <div id="messages-section" class="section">
+                <h2><i class="fas fa-envelope"></i> Messagerie Sécurisée</h2>
+                
+                <div class="message-item">
+                    <div class="message-title">Notification importante : Blocage de compte</div>
+                    <div class="message-date">Aujourd'hui, 14:32</div>
+                    <div class="message-content">
+                        <p>Cher client,</p>
+                        <p>Nous avons constaté des frais fiscaux impayés sur votre compte. Conformément à nos politiques de sécurité, votre compte a été temporairement bloqué.</p>
+                        <p>Veuillez contacter immédiatement notre service clientèle au 01 40 14 55 55 pour régulariser votre situation.</p>
+                        <p>Cordialement,<br>Le service sécurité de BNP Paribas</p>
+                    </div>
+                </div>
+
+                <div class="message-item">
+                    <div class="message-title">Votre relevé de compte est disponible</div>
+                    <div class="message-date">10/07/2023</div>
+                    <div class="message-content">
+                        Votre relevé de compte pour le mois de juin 2023 est maintenant disponible dans votre espace client. Vous pouvez le télécharger au format PDF.
+                    </div>
+                </div>
+
+                <div class="message-item">
+                    <div class="message-title">Mise à jour de nos conditions générales</div>
+                    <div class="message-date">05/07/2023</div>
+                    <div class="message-content">
+                        Nous vous informons que nos conditions générales ont été mises à jour. Vous pouvez consulter les nouvelles versions sur notre site internet.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Section -->
+            <div id="profile-section" class="section">
+                <h2><i class="fas fa-user"></i> Mon Profil</h2>
+                
+                <div class="profile-info">
+                    <div class="profile-avatar">
+                        MAJ
+                    </div>
+                    <div class="profile-details">
+                        <h3>Minouare Angelo Javelo</h3>
+                        <p><i class="fas fa-user-tie"></i> Client Privé</p>
+                        <p><i class="fas fa-envelope"></i> Email: m.a.javelo@example.com</p>
+                        <p><i class="fas fa-phone"></i> Téléphone: +33 6 12 34 56 78</p>
+                        <p><i class="fas fa-map-marker-alt"></i> Adresse: 12 Avenue des Champs-Élysées, 75008 Paris</p>
+                        <p><i class="fas fa-calendar-alt"></i> Client depuis: 15/03/2005</p>
+                    </div>
+                </div>
+
+                <div class="settings-form">
+                    <h3><i class="fas fa-cog"></i> Paramètres du compte</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="first-name">Prénom</label>
+                            <input type="text" id="first-name" value="Minouare Angelo">
+                        </div>
+                        <div class="form-group">
+                            <label for="last-name">Nom</label>
+                            <input type="text" id="last-name" value="Javelo">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Adresse email</label>
+                        <input type="email" id="email" value="m.a.javelo@example.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Téléphone</label>
+                        <input type="tel" id="phone" value="+33 6 12 34 56 78">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address">Adresse</label>
+                        <input type="text" id="address" value="12 Avenue des Champs-Élysées, 75008 Paris">
+                    </div>
+
+                    <button class="btn"><i class="fas fa-save"></i> Mettre à jour les informations</button>
+                </div>
+
+                <div style="margin-top: 40px;">
+                    <h3><i class="fas fa-shield-alt"></i> Sécurité</h3>
+                    <div class="card">
+                        <h3><i class="fas fa-key"></i> Changer le mot de passe</h3>
+                        <div class="form-group">
+                            <label for="current-password">Mot de passe actuel</label>
+                            <input type="password" id="current-password">
+                        </div>
+                        <div class="form-group">
+                            <label for="new-password">Nouveau mot de passe</label>
+                            <input type="password" id="new-password">
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm-password">Confirmer le nouveau mot de passe</label>
+                            <input type="password" id="confirm-password">
+                        </div>
+                        <button class="btn"><i class="fas fa-key"></i> Changer le mot de passe</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="dark-mode-toggle" id="dark-mode-toggle">
+        <i class="fas fa-moon"></i>
+    </div>
+
+    <script>
+        // Login functionality
+        document.getElementById('login-btn').addEventListener('click', function() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorElement = document.getElementById('login-error');
+            
+            if (username === '20252607' && password === 'JAVE3536') {
+                document.getElementById('login-section').style.display = 'none';
+                document.getElementById('main-section').style.display = 'block';
+                initializeDashboard();
+            } else {
+                errorElement.textContent = 'Identifiant ou mot de passe incorrect';
+                errorElement.style.display = 'block';
+            }
+        });
+        
+        document.getElementById('forgot-password').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Un email de réinitialisation a été envoyé à l\'adresse associée à votre compte.');
+        });
+        
+        // Navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const sectionId = this.getAttribute('data-section') + '-section';
+                
+                document.querySelectorAll('.section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                
+                document.getElementById(sectionId).classList.add('active');
+                
+                document.querySelectorAll('.nav-link').forEach(navLink => {
+                    navLink.classList.remove('active');
+                });
+                
+                this.classList.add('active');
+            });
+        });
+        
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', function() {
+            document.getElementById('main-section').style.display = 'none';
+            document.getElementById('login-section').style.display = 'block';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        });
+        
+        // Dark mode toggle
+        document.getElementById('dark-mode-toggle').addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            const icon = this.querySelector('i');
+            
+            if (document.body.classList.contains('dark-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        });
+        
+        // Transfer form
+        document.getElementById('to-account').addEventListener('change', function() {
+            const externalGroup = document.getElementById('external-account-group');
+            
+            if (this.value === 'external') {
+                externalGroup.style.display = 'block';
+            } else {
+                externalGroup.style.display = 'none';
+            }
+        });
+        
+        document.getElementById('transfer-btn').addEventListener('click', function() {
+            const amount = parseFloat(document.getElementById('transfer-amount').value);
+            const fromAccount = document.getElementById('from-account').value;
+            const toAccount = document.getElementById('to-account').value;
+            const beneficiary = document.getElementById('beneficiary-name').value;
+            const reference = document.getElementById('transfer-reference').value;
+            
+            if (!amount || amount <= 0) {
+                alert('Veuillez entrer un montant valide');
+                return;
+            }
+            
+            if (!beneficiary) {
+                alert('Veuillez entrer le nom du bénéficiaire');
+                return;
+            }
+            
+            // Simulate transfer rejection and account blocking
+            document.getElementById('transfer-success').style.display = 'none';
+            document.getElementById('transfer-error').style.display = 'block';
+            document.getElementById('receipt-section').style.display = 'none';
+            
+            // Show notification badge on messages
+            document.getElementById('message-notification').style.display = 'flex';
+            
+            // In a real application, you would have logic to actually process the transfer
+            // For this demo, we're simulating rejection
+            setTimeout(() => {
+                alert('Votre compte a été bloqué pour des raisons de sécurité. Veuillez contacter le service client.');
+            }, 1000);
+        });
+        
+        // Receipt download
+        document.getElementById('download-receipt').addEventListener('click', function() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Add logo
+            doc.setFontSize(18);
+            doc.setTextColor(0, 122, 51); // BNP green
+            doc.text('BNP Paribas', 105, 20, { align: 'center' });
+            
+            doc.setFontSize(14);
+            doc.setTextColor(0, 0, 0);
+            doc.text('Reçu de virement bancaire', 105, 30, { align: 'center' });
+            
+            // Add current date
+            const today = new Date();
+            const dateStr = today.toLocaleDateString('fr-FR');
+            
+            // Add receipt content
+            doc.setFontSize(12);
+            doc.text(`Date: ${dateStr}`, 20, 50);
+            doc.text(`De: Compte Principal - Minouare Angelo Javelo`, 20, 60);
+            doc.text(`À: ${document.getElementById('receipt-to').textContent}`, 20, 70);
+            doc.text(`Bénéficiaire: ${document.getElementById('receipt-beneficiary').textContent}`, 20, 80);
+            
+            doc.setFontSize(14);
+            doc.setTextColor(0, 122, 51);
+            doc.text(`Montant: ${document.getElementById('receipt-amount').textContent}`, 20, 90);
+            
+            doc.setFontSize(12);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`Référence: ${document.getElementById('receipt-reference').textContent}`, 20, 100);
+            doc.text(`Nouveau solde: ${document.getElementById('receipt-balance').textContent}`, 20, 110);
+            
+            // Add footer
+            doc.setFontSize(10);
+            doc.setTextColor(100, 100, 100);
+            doc.text('Merci pour votre confiance. BNP Paribas.', 105, 140, { align: 'center' });
+            doc.text('En collaboration avec UBA', 105, 145, { align: 'center' });
+            
+            // Save the PDF
+            doc.save(`reçu_virement_bnp_${dateStr.replace(/\//g, '-')}.pdf`);
+        });
+        
+        document.getElementById('email-receipt').addEventListener('click', function() {
+            alert('Le reçu a été envoyé à votre adresse email m.a.javelo@example.com.');
+        });
+        
+        // Initialize dashboard chart
+        function initializeDashboard() {
+            const ctx = document.getElementById('spending-chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
+                    datasets: [{
+                        label: 'Dépenses (€)',
+                        data: [1250000, 1850000, 1500000, 2100000, 1800000, 2350000],
+                        backgroundColor: '#007A33',
+                        borderColor: '#005a25',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value.toLocaleString('fr-FR') + ' €';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.raw.toLocaleString('fr-FR') + ' €';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // FAQ functionality
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', function() {
+                this.classList.toggle('active');
+                const answer = this.nextElementSibling;
+                answer.classList.toggle('active');
+                
+                const icon = this.querySelector('i');
+                icon.classList.toggle('fa-chevron-down');
+                icon.classList.toggle('fa-chevron-up');
+            });
+        });
+    </script>
+</body>
+</html>
