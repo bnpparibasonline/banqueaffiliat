@@ -816,12 +816,12 @@
         </div>
         <div class="container header-container">
             <div class="logo">
-                <img src="logobnp.png" alt="">
+                <img src="logobnp.png" alt="B">
                 <span class="logo-text"></span>
             </div>
             <div>
                 <button class="btn btn-outline" id="auth-btn">Connexion</button>
-                <button class="btn btn-primary">Ouvrir un compte</button>
+                <button class="btn btn-primary" id="open-account-btn">Ouvrir un compte</button>
             </div>
         </div>
     </header>
@@ -1160,27 +1160,32 @@
                 section.style.display = 'none';
             });
             
+            // Gérer le bouton "Ouvrir un compte"
+            const openAccountBtn = document.getElementById('open-account-btn');
+            if (sectionToShow === 'dashboard') {
+                openAccountBtn.style.display = 'none';
+                sections[sectionToShow].style.display = 'flex';
+                sections[sectionToShow].style.flexDirection = 'column';
+                document.getElementById('auth-btn').textContent = 'Déconnexion';
+                // Charger les transactions quand le dashboard est affiché
+                loadTransactions();
+                // Afficher une notification de bienvenue
+                setTimeout(() => {
+                    showNotification('Bienvenue Minouaré Angela Javelo !');
+                }, 1000);
+                
+                // Animation des cartes de compte
+                animateAccountCards();
+                // Animation des mini-tableaux
+                animateMiniTables();
+            } else {
+                openAccountBtn.style.display = 'inline-block';
+                document.getElementById('auth-btn').textContent = 'Connexion';
+            }
+            
             // Afficher la section demandée
-            if (sections[sectionToShow]) {
+            if (sections[sectionToShow] && sectionToShow !== 'dashboard') {
                 sections[sectionToShow].style.display = 'block';
-                if (sectionToShow === 'dashboard') {
-                    sections[sectionToShow].style.display = 'flex';
-                    sections[sectionToShow].style.flexDirection = 'column';
-                    document.getElementById('auth-btn').textContent = 'Déconnexion';
-                    // Charger les transactions quand le dashboard est affiché
-                    loadTransactions();
-                    // Afficher une notification de bienvenue
-                    setTimeout(() => {
-                        showNotification('Bienvenue Minouaré Angela Javelo !');
-                    }, 1000);
-                    
-                    // Animation des cartes de compte
-                    animateAccountCards();
-                    // Animation des mini-tableaux
-                    animateMiniTables();
-                } else {
-                    document.getElementById('auth-btn').textContent = 'Connexion';
-                }
             }
         }
 
