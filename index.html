@@ -84,6 +84,12 @@
             100% { background-position: 0% 50%; }
         }
 
+        @keyframes rowHighlight {
+            0% { background-color: inherit; }
+            50% { background-color: var(--bnp-green-light); }
+            100% { background-color: inherit; }
+        }
+
         /* Header */
         header {
             background-color: var(--bnp-white);
@@ -557,7 +563,7 @@
             margin-top: 15px;
         }
 
-        /* Dernières transactions sous les soldes */
+        /* Tableau des dernières opérations sous les soldes */
         .recent-transactions {
             margin-top: 20px;
             border-top: 1px solid #eee;
@@ -570,25 +576,33 @@
             color: var(--bnp-green);
         }
 
-        .transaction-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px dashed #eee;
-            animation: fadeIn 0.5s;
-        }
-
-        .transaction-item:last-child {
-            border-bottom: none;
-        }
-
-        .transaction-desc {
+        .mini-transactions-table {
+            width: 100%;
+            border-collapse: collapse;
             font-size: 0.85rem;
+        }
+
+        .mini-transactions-table tr {
+            transition: all 0.3s;
+        }
+
+        .mini-transactions-table tr:hover {
+            background-color: var(--bnp-green-light);
+            animation: rowHighlight 1.5s infinite;
+        }
+
+        .mini-transactions-table td {
+            padding: 8px 5px;
+            border-bottom: 1px dashed #eee;
+        }
+
+        .mini-transactions-table tr:last-child td {
+            border-bottom: none;
         }
 
         .transaction-amount {
             font-weight: 600;
-            font-size: 0.9rem;
+            text-align: right;
         }
 
         .transaction-amount.credit {
@@ -802,8 +816,8 @@
         </div>
         <div class="container header-container">
             <div class="logo">
-                <img src="logobnp.png" alt="BNP Paribas Logo">
-                <span class="logo-text">BNP Paribas</span>
+                <img src="logobnp.png" alt="">
+                <span class="logo-text"></span>
             </div>
             <div>
                 <button class="btn btn-outline" id="auth-btn">Connexion</button>
@@ -926,18 +940,20 @@
                     
                     <div class="recent-transactions">
                         <h4>Dernières opérations</h4>
-                        <div class="transaction-item">
-                            <span class="transaction-desc">Virement salaire</span>
-                            <span class="transaction-amount credit">+4 500,00 €</span>
-                        </div>
-                        <div class="transaction-item">
-                            <span class="transaction-desc">Prélèvement EDF</span>
-                            <span class="transaction-amount debit">-125,60 €</span>
-                        </div>
-                        <div class="transaction-item">
-                            <span class="transaction-desc">Achat Amazon</span>
-                            <span class="transaction-amount debit">-89,99 €</span>
-                        </div>
+                        <table class="mini-transactions-table">
+                            <tr>
+                                <td>Virement salaire</td>
+                                <td class="transaction-amount credit">+4 500,00 €</td>
+                            </tr>
+                            <tr>
+                                <td>Prélèvement EDF</td>
+                                <td class="transaction-amount debit">-125,60 €</td>
+                            </tr>
+                            <tr>
+                                <td>Achat Amazon</td>
+                                <td class="transaction-amount debit">-89,99 €</td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
                 
@@ -948,14 +964,16 @@
                     
                     <div class="recent-transactions">
                         <h4>Dernières opérations</h4>
-                        <div class="transaction-item">
-                            <span class="transaction-desc">Virement automatique</span>
-                            <span class="transaction-amount debit">-1 000,00 €</span>
-                        </div>
-                        <div class="transaction-item">
-                            <span class="transaction-desc">Intérêts</span>
-                            <span class="transaction-amount credit">+42,30 €</span>
-                        </div>
+                        <table class="mini-transactions-table">
+                            <tr>
+                                <td>Virement automatique</td>
+                                <td class="transaction-amount debit">-1 000,00 €</td>
+                            </tr>
+                            <tr>
+                                <td>Intérêts</td>
+                                <td class="transaction-amount credit">+42,30 €</td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
                 
@@ -966,14 +984,16 @@
                     
                     <div class="recent-transactions">
                         <h4>Dernières opérations</h4>
-                        <div class="transaction-item">
-                            <span class="transaction-desc">Intérêts</span>
-                            <span class="transaction-amount credit">+42,30 €</span>
-                        </div>
-                        <div class="transaction-item">
-                            <span class="transaction-desc">Dépôt</span>
-                            <span class="transaction-amount credit">+500,00 €</span>
-                        </div>
+                        <table class="mini-transactions-table">
+                            <tr>
+                                <td>Intérêts</td>
+                                <td class="transaction-amount credit">+42,30 €</td>
+                            </tr>
+                            <tr>
+                                <td>Dépôt</td>
+                                <td class="transaction-amount credit">+500,00 €</td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -1156,6 +1176,8 @@
                     
                     // Animation des cartes de compte
                     animateAccountCards();
+                    // Animation des mini-tableaux
+                    animateMiniTables();
                 } else {
                     document.getElementById('auth-btn').textContent = 'Connexion';
                 }
@@ -1180,6 +1202,16 @@
                     }
                 });
             }, 5000);
+        }
+
+        // Animation des mini-tableaux
+        function animateMiniTables() {
+            const rows = document.querySelectorAll('.mini-transactions-table tr');
+            rows.forEach((row, index) => {
+                setTimeout(() => {
+                    row.style.animation = 'fadeIn 0.5s';
+                }, index * 100);
+            });
         }
 
         // Navigation
@@ -1434,23 +1466,6 @@
                 }
             }
         };
-
-        // Animation des transactions récentes sous les soldes
-        function animateRecentTransactions() {
-            const transactionItems = document.querySelectorAll('.transaction-item');
-            transactionItems.forEach((item, index) => {
-                setTimeout(() => {
-                    item.style.animation = 'fadeIn 0.5s';
-                }, index * 100);
-            });
-        }
-
-        // Démarrer les animations quand le dashboard est prêt
-        document.addEventListener('DOMContentLoaded', function() {
-            if (document.getElementById('dashboard').style.display !== 'none') {
-                animateRecentTransactions();
-            }
-        });
     </script>
 </body>
 </html>
