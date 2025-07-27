@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BNP Paribas & UBA - Banque en ligne</title>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <style>
         :root {
             --bnp-green: #008148;
@@ -17,6 +18,7 @@
             --success-green: #5cb85c;
             --savings-blue: #2e86de;
             --livret-orange: #f39c12;
+            --notification-yellow: #ffc107;
         }
 
         * {
@@ -38,6 +40,50 @@
             padding: 0 20px;
         }
 
+        /* Animations personnalisées */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideInLeft {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes balanceShake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(1deg); }
+            75% { transform: rotate(-1deg); }
+        }
+
+        @keyframes textGlow {
+            0%, 100% { text-shadow: 0 0 5px rgba(0, 129, 72, 0.3); }
+            50% { text-shadow: 0 0 15px rgba(0, 129, 72, 0.7); }
+        }
+
+        @keyframes cardHover {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-5px) rotate(0.5deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         /* Header */
         header {
             background-color: var(--bnp-white);
@@ -46,6 +92,31 @@
             width: 100%;
             top: 0;
             z-index: 1000;
+            animation: slideInDown 0.5s ease-out;
+        }
+
+        .partnership-banner {
+            background: linear-gradient(90deg, var(--bnp-green), var(--savings-blue), var(--livret-orange), var(--bnp-green));
+            background-size: 400% 400%;
+            color: var(--bnp-white);
+            text-align: center;
+            padding: 8px 0;
+            font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
+            animation: rainbow 8s ease infinite;
+        }
+
+        .banner-text {
+            display: inline-block;
+            animation: marquee 15s linear infinite;
+            white-space: nowrap;
+            padding-left: 100%;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
         }
 
         .header-container {
@@ -58,25 +129,34 @@
         .logo {
             display: flex;
             align-items: center;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05) rotate(-2deg);
         }
 
         .logo img {
             height: 40px;
             margin-right: 10px;
+            animation: float 3s ease-in-out infinite;
+            transition: all 0.3s;
+        }
+
+        .logo:hover img {
+            animation: float 1s ease-in-out infinite;
         }
 
         .logo-text {
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--bnp-green);
+            animation: textGlow 3s infinite;
+            transition: all 0.3s;
         }
 
-        .partnership-banner {
-            background-color: var(--bnp-green);
-            color: var(--bnp-white);
-            text-align: center;
-            padding: 8px 0;
-            font-size: 0.9rem;
+        .logo:hover .logo-text {
+            animation: textGlow 1s infinite;
         }
 
         /* Boutons */
@@ -89,6 +169,23 @@
             transition: all 0.3s ease;
             cursor: pointer;
             border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover:after {
+            left: 100%;
         }
 
         .btn-primary {
@@ -100,6 +197,7 @@
         .btn-primary:hover {
             background-color: var(--bnp-green-dark);
             border-color: var(--bnp-green-dark);
+            transform: translateY(-2px) scale(1.05);
         }
 
         .btn-outline {
@@ -110,6 +208,7 @@
 
         .btn-outline:hover {
             background-color: var(--bnp-green-light);
+            transform: translateY(-2px) scale(1.05);
         }
 
         .btn-sm {
@@ -125,6 +224,7 @@
 
         .btn-danger:hover {
             background-color: #c9302c;
+            transform: translateY(-2px) scale(1.05);
         }
 
         /* Page d'accueil */
@@ -132,24 +232,82 @@
             margin-top: 120px;
             text-align: center;
             padding: 60px 0;
+            position: relative;
+            background: url('https://www.bnpparibas.com/wp-content/uploads/2020/01/banque-digitale.jpg') no-repeat center center;
+            background-size: cover;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+        }
+
+        .hero:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 0;
+        }
+
+        .hero .container {
+            position: relative;
+            z-index: 1;
         }
 
         .hero h1 {
             font-size: 2.5rem;
-            color: var(--bnp-green);
+            color: white;
             margin-bottom: 20px;
+            animation: fadeInDown 1s both;
         }
 
         .hero p {
             font-size: 1.2rem;
             max-width: 800px;
             margin: 0 auto 30px;
+            animation: fadeInUp 1s both 0.3s;
+        }
+
+        .hero .btn {
+            animation: fadeIn 1s both 0.6s;
+        }
+
+        /* Effet de particules */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            background-color: var(--bnp-green-light);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: floatParticle 15s infinite linear;
+        }
+
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-500px) rotate(360deg);
+                opacity: 0;
+            }
         }
 
         /* Page de connexion */
         .login-section {
             display: none;
             padding: 80px 0;
+            background: linear-gradient(135deg, var(--bnp-gray) 0%, var(--bnp-white) 100%);
         }
 
         .login-container {
@@ -159,6 +317,9 @@
             padding: 40px;
             border-radius: 8px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            animation: fadeInUp 0.5s;
+            transform-origin: top center;
+            border: 1px solid var(--bnp-green-light);
         }
 
         .login-tabs {
@@ -172,11 +333,17 @@
             cursor: pointer;
             font-weight: 600;
             color: #777;
+            transition: all 0.3s;
         }
 
         .login-tab.active {
             color: var(--bnp-green);
             border-bottom: 2px solid var(--bnp-green);
+        }
+
+        .login-tab:hover {
+            background-color: var(--bnp-green-light);
+            transform: translateY(-2px);
         }
 
         .login-form {
@@ -185,10 +352,12 @@
 
         .login-form.active {
             display: block;
+            animation: fadeIn 0.5s;
         }
 
         .form-group {
             margin-bottom: 20px;
+            animation: fadeIn 0.5s;
         }
 
         .form-group label {
@@ -203,6 +372,13 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--bnp-green);
+            box-shadow: 0 0 0 3px rgba(0, 129, 72, 0.2);
+            transform: scale(1.01);
         }
 
         .num-pad {
@@ -224,12 +400,14 @@
 
         .num-btn:hover {
             background-color: var(--bnp-green-light);
+            transform: translateY(-2px) scale(1.05);
         }
 
         .error-message {
             color: var(--error-red);
             margin-top: 10px;
             font-size: 0.9rem;
+            animation: shake 0.5s;
         }
 
         /* Dashboard */
@@ -242,6 +420,8 @@
             background-color: var(--bnp-green);
             color: var(--bnp-white);
             padding: 20px 0;
+            animation: slideInDown 0.5s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
         .user-info {
@@ -261,6 +441,16 @@
             color: var(--bnp-green);
             font-weight: bold;
             font-size: 1.2rem;
+            transition: all 0.3s;
+            animation: pulse 2s infinite;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .user-avatar:hover {
+            transform: rotate(360deg);
+            animation: none;
+            background: linear-gradient(45deg, var(--bnp-green), var(--savings-blue));
+            color: white;
         }
 
         .sidebar {
@@ -270,6 +460,7 @@
             height: 100%;
             padding: 20px 0;
             box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            animation: slideInLeft 0.5s;
         }
 
         .sidebar-menu {
@@ -278,6 +469,11 @@
 
         .sidebar-menu li {
             margin-bottom: 5px;
+            transition: all 0.3s;
+        }
+
+        .sidebar-menu li:hover {
+            transform: translateX(5px);
         }
 
         .sidebar-menu a {
@@ -286,16 +482,21 @@
             color: var(--bnp-gray-dark);
             text-decoration: none;
             transition: all 0.3s;
+            border-radius: 4px;
         }
 
         .sidebar-menu a:hover, .sidebar-menu a.active {
             background-color: var(--bnp-green-light);
             color: var(--bnp-green);
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
         }
 
         .main-content {
             margin-left: 250px;
             padding: 30px;
+            animation: fadeIn 0.5s 0.3s both;
+            background-color: var(--bnp-gray);
+            min-height: calc(100vh - 120px);
         }
 
         /* Cartes de compte */
@@ -315,11 +516,13 @@
             position: relative;
             overflow: hidden;
             border-left: 5px solid var(--bnp-green);
+            animation: fadeInUp 0.5s;
         }
 
         .account-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            animation: cardHover 1s infinite;
         }
 
         .account-card.savings {
@@ -340,12 +543,82 @@
             font-size: 1.8rem;
             font-weight: 700;
             margin: 10px 0;
+            animation: pulse 2s infinite, balanceShake 3s infinite;
+            transition: all 0.3s;
+        }
+
+        .account-card:hover .balance {
+            animation: pulse 1s infinite, balanceShake 1.5s infinite;
         }
 
         .account-card .account-number {
             font-size: 0.9rem;
             color: #666;
             margin-top: 15px;
+        }
+
+        /* Dernières transactions sous les soldes */
+        .recent-transactions {
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+
+        .recent-transactions h4 {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: var(--bnp-green);
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed #eee;
+            animation: fadeIn 0.5s;
+        }
+
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+
+        .transaction-desc {
+            font-size: 0.85rem;
+        }
+
+        .transaction-amount {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .transaction-amount.credit {
+            color: var(--bnp-green);
+        }
+
+        .transaction-amount.debit {
+            color: var(--error-red);
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--notification-yellow);
+            color: #000;
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            z-index: 1001;
+            animation: slideInRight 0.5s, fadeOut 1s 3s forwards;
+            display: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .notification:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
         /* Tableau des transactions */
@@ -355,6 +628,8 @@
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             margin-top: 40px;
+            animation: fadeIn 0.5s;
+            border: 1px solid var(--bnp-green-light);
         }
 
         .transactions-header {
@@ -367,6 +642,11 @@
         .search-container {
             position: relative;
             width: 300px;
+            transition: all 0.3s;
+        }
+
+        .search-container:hover {
+            transform: scale(1.02);
         }
 
         .search-container input {
@@ -374,6 +654,12 @@
             padding: 10px 15px 10px 40px;
             border: 1px solid #ddd;
             border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .search-container input:focus {
+            border-color: var(--bnp-green);
+            box-shadow: 0 0 0 3px rgba(0, 129, 72, 0.2);
         }
 
         .search-container::before {
@@ -381,6 +667,7 @@
             position: absolute;
             left: 10px;
             top: 10px;
+            animation: pulse 2s infinite;
         }
 
         .transactions-table {
@@ -399,14 +686,21 @@
         .transactions-table td {
             padding: 12px 15px;
             border-bottom: 1px solid #eee;
+            transition: all 0.3s;
         }
 
-        .transactions-table tr:last-child td {
-            border-bottom: none;
+        .transactions-table tr {
+            transition: all 0.3s;
         }
 
         .transactions-table tr:hover {
             background-color: #f9f9f9;
+            transform: translateX(5px);
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .transactions-table tr:last-child td {
+            border-bottom: none;
         }
 
         .amount {
@@ -415,6 +709,7 @@
 
         .amount.credit {
             color: var(--bnp-green);
+            animation: pulse 3s infinite;
         }
 
         .amount.debit {
@@ -427,6 +722,13 @@
             background-color: #eee;
             border-radius: 12px;
             font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+
+        .transaction-category:hover {
+            transform: scale(1.1);
+            background-color: var(--bnp-green-light);
+            color: var(--bnp-green);
         }
 
         .transaction-actions {
@@ -438,6 +740,13 @@
             padding: 20px;
             border-radius: 4px;
             margin-bottom: 20px;
+            animation: pulse 3s infinite;
+            transition: all 0.3s;
+        }
+
+        .message-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
         .error-box {
@@ -489,11 +798,11 @@
     <!-- Header -->
     <header>
         <div class="partnership-banner">
-            Partenariat BNP Paribas & UBA - Une alliance au service de vos finances
+            <div class="banner-text">Partenariat BNP Paribas & UBA - Une alliance au service de vos finances • Sécurité renforcée • Taux préférentiels • Service client 24/7</div>
         </div>
         <div class="container header-container">
             <div class="logo">
-                <div style="width: 40px; height: 40px; background-color: var(--bnp-green); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; margin-right: 10px;">BNP</div>
+                <img src="logobnp.png" alt="BNP Paribas Logo">
                 <span class="logo-text">BNP Paribas</span>
             </div>
             <div>
@@ -505,6 +814,7 @@
 
     <!-- Page d'accueil -->
     <section class="hero" id="home-section">
+        <div class="particles" id="particles"></div>
         <div class="container">
             <h1>Votre banque en ligne sécurisée</h1>
             <p>Accédez à tous vos services bancaires 24h/24 depuis notre plateforme sécurisée en partenariat avec UBA</p>
@@ -613,18 +923,58 @@
                     <h3>Compte Principal</h3>
                     <div class="balance">1 375 000 €</div>
                     <div class="account-number">FR76 3000 1007 1600 0000 0000 123</div>
+                    
+                    <div class="recent-transactions">
+                        <h4>Dernières opérations</h4>
+                        <div class="transaction-item">
+                            <span class="transaction-desc">Virement salaire</span>
+                            <span class="transaction-amount credit">+4 500,00 €</span>
+                        </div>
+                        <div class="transaction-item">
+                            <span class="transaction-desc">Prélèvement EDF</span>
+                            <span class="transaction-amount debit">-125,60 €</span>
+                        </div>
+                        <div class="transaction-item">
+                            <span class="transaction-desc">Achat Amazon</span>
+                            <span class="transaction-amount debit">-89,99 €</span>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="account-card savings">
                     <h3>Compte Épargne</h3>
                     <div class="balance">500 000 €</div>
                     <div class="account-number">FR76 3000 1007 1600 0000 0000 456</div>
+                    
+                    <div class="recent-transactions">
+                        <h4>Dernières opérations</h4>
+                        <div class="transaction-item">
+                            <span class="transaction-desc">Virement automatique</span>
+                            <span class="transaction-amount debit">-1 000,00 €</span>
+                        </div>
+                        <div class="transaction-item">
+                            <span class="transaction-desc">Intérêts</span>
+                            <span class="transaction-amount credit">+42,30 €</span>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="account-card livret">
                     <h3>Livret A</h3>
                     <div class="balance">25 000 €</div>
                     <div class="account-number">FR76 3000 1007 1600 0000 0000 789</div>
+                    
+                    <div class="recent-transactions">
+                        <h4>Dernières opérations</h4>
+                        <div class="transaction-item">
+                            <span class="transaction-desc">Intérêts</span>
+                            <span class="transaction-amount credit">+42,30 €</span>
+                        </div>
+                        <div class="transaction-item">
+                            <span class="transaction-desc">Dépôt</span>
+                            <span class="transaction-amount credit">+500,00 €</span>
+                        </div>
+                    </div>
                 </div>
             </div>
             
@@ -663,7 +1013,53 @@
         </div>
     </div>
 
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        Nouvelle notification - Votre virement a été effectué avec succès
+    </div>
+
     <script>
+        // Création des particules pour l'arrière-plan
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Position aléatoire
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100 + 100; // Commence en dessous de la vue
+                
+                // Taille aléatoire
+                const size = Math.random() * 10 + 5;
+                
+                // Animation delay aléatoire
+                const delay = Math.random() * 15;
+                
+                particle.style.left = `${posX}%`;
+                particle.style.top = `${posY}%`;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.animationDelay = `${delay}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Afficher une notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.display = 'block';
+            
+            // Réinitialiser l'animation
+            notification.style.animation = 'none';
+            void notification.offsetWidth; // Trigger reflow
+            notification.style.animation = 'slideInRight 0.5s, fadeOut 1s 3s forwards';
+        }
+
         // Données de transactions
         const transactions = [
             {
@@ -753,10 +1149,37 @@
                     document.getElementById('auth-btn').textContent = 'Déconnexion';
                     // Charger les transactions quand le dashboard est affiché
                     loadTransactions();
+                    // Afficher une notification de bienvenue
+                    setTimeout(() => {
+                        showNotification('Bienvenue Minouaré Angela Javelo !');
+                    }, 1000);
+                    
+                    // Animation des cartes de compte
+                    animateAccountCards();
                 } else {
                     document.getElementById('auth-btn').textContent = 'Connexion';
                 }
             }
+        }
+
+        // Animation aléatoire des cartes de compte
+        function animateAccountCards() {
+            const cards = document.querySelectorAll('.account-card');
+            cards.forEach((card, index) => {
+                // Délai différent pour chaque carte
+                setTimeout(() => {
+                    card.style.animation = 'fadeInUp 0.5s';
+                }, index * 200);
+            });
+            
+            // Animation continue
+            setInterval(() => {
+                cards.forEach(card => {
+                    if (Math.random() > 0.7) { // 30% de chance de déclencher l'animation
+                        card.style.animation = 'cardHover 1s';
+                    }
+                });
+            }, 5000);
         }
 
         // Navigation
@@ -774,16 +1197,41 @@
             } else {
                 showSection('login');
             }
+            
+            // Animation du bouton
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 100);
         });
 
         document.getElementById('home-login-btn').addEventListener('click', function(e) {
             e.preventDefault();
             showSection('login');
+            
+            // Animation du bouton
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 100);
         });
 
-        // Au chargement, afficher l'accueil
+        // Au chargement, afficher l'accueil et créer les particules
         window.addEventListener('DOMContentLoaded', function() {
             showSection('home');
+            createParticles();
+            
+            // Animation aléatoire des soldes
+            setInterval(() => {
+                const balances = document.querySelectorAll('.balance');
+                balances.forEach(balance => {
+                    if (Math.random() > 0.7) { // 30% de chance de déclencher l'animation
+                        balance.style.animation = 'none';
+                        void balance.offsetWidth; // Trigger reflow
+                        balance.style.animation = 'pulse 0.5s, balanceShake 0.5s';
+                    }
+                });
+            }, 5000);
         });
 
         // Num pad functionality
@@ -801,15 +1249,28 @@
                 } else if (document.activeElement === numPassword) {
                     numPassword.value += num;
                 }
+                // Animation du bouton
+                this.style.transform = 'scale(0.9)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 100);
             });
         });
         
         numClear.addEventListener('click', function() {
             numUsername.value = '';
+            this.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 100);
         });
         
         passClear.addEventListener('click', function() {
             numPassword.value = '';
+            this.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 100);
         });
         
         // Login validation
@@ -822,6 +1283,12 @@
             } else {
                 document.getElementById('num-error').textContent = 'Identifiant ou mot de passe incorrect';
             }
+            
+            // Animation du bouton
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 100);
         });
         
         document.getElementById('manual-login-btn').addEventListener('click', function() {
@@ -833,6 +1300,12 @@
             } else {
                 document.getElementById('manual-error').textContent = 'Identifiant ou mot de passe incorrect';
             }
+            
+            // Animation du bouton
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 100);
         });
         
         // Logout functionality
@@ -847,13 +1320,28 @@
             document.getElementById('manual-password').value = '';
             document.getElementById('num-error').textContent = '';
             document.getElementById('manual-error').textContent = '';
+            
+            // Animation du bouton
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 100);
         });
 
         // Afficher la section des transactions
         document.getElementById('transactions-menu-btn').addEventListener('click', function(e) {
             e.preventDefault();
             document.getElementById('transactions-section').style.display = 'block';
-            window.scrollTo(0, document.getElementById('transactions-section').offsetTop);
+            window.scrollTo({
+                top: document.getElementById('transactions-section').offsetTop,
+                behavior: 'smooth'
+            });
+            
+            // Animation du bouton
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 100);
         });
 
         // Gestion des onglets de connexion
@@ -864,6 +1352,12 @@
                 
                 this.classList.add('active');
                 document.getElementById(this.getAttribute('data-tab') + '-form').classList.add('active');
+                
+                // Animation de l'onglet
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 100);
             });
         });
 
@@ -888,8 +1382,9 @@
                 return;
             }
             
-            filteredTransactions.forEach(transaction => {
+            filteredTransactions.forEach((transaction, index) => {
                 const row = document.createElement('tr');
+                row.style.animationDelay = `${index * 0.1}s`;
                 row.innerHTML = `
                     <td>${transaction.date}</td>
                     <td>${transaction.description}<br><small>${transaction.account}</small></td>
@@ -901,6 +1396,11 @@
                     </td>
                 `;
                 transactionsList.appendChild(row);
+                
+                // Animation d'apparition progressive
+                setTimeout(() => {
+                    row.style.animation = 'fadeIn 0.5s';
+                }, index * 100);
             });
         }
 
@@ -921,12 +1421,36 @@
             if (confirm('Êtes-vous sûr de vouloir supprimer cette transaction ?')) {
                 const index = transactions.findIndex(t => t.id === id);
                 if (index !== -1) {
-                    transactions.splice(index, 1);
-                    loadTransactions(document.getElementById('transaction-search').value);
-                    alert('Transaction supprimée avec succès');
+                    // Animation de suppression
+                    const row = document.querySelector(`tr[data-id="${id}"]`);
+                    if (row) {
+                        row.style.animation = 'fadeOut 0.5s forwards';
+                        setTimeout(() => {
+                            transactions.splice(index, 1);
+                            loadTransactions(document.getElementById('transaction-search').value);
+                            showNotification('Transaction supprimée avec succès');
+                        }, 500);
+                    }
                 }
             }
         };
+
+        // Animation des transactions récentes sous les soldes
+        function animateRecentTransactions() {
+            const transactionItems = document.querySelectorAll('.transaction-item');
+            transactionItems.forEach((item, index) => {
+                setTimeout(() => {
+                    item.style.animation = 'fadeIn 0.5s';
+                }, index * 100);
+            });
+        }
+
+        // Démarrer les animations quand le dashboard est prêt
+        document.addEventListener('DOMContentLoaded', function() {
+            if (document.getElementById('dashboard').style.display !== 'none') {
+                animateRecentTransactions();
+            }
+        });
     </script>
 </body>
 </html>
