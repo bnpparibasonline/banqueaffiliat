@@ -775,6 +775,75 @@
             border: 1px solid #c3e6cb;
         }
 
+        /* Section Virements */
+        .transfer-section {
+            background-color: var(--bnp-white);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-top: 40px;
+            animation: fadeIn 0.5s;
+            border: 1px solid var(--bnp-green-light);
+            display: none;
+        }
+
+        .transfer-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-col {
+            flex: 1;
+        }
+
+        .transfer-progress {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .progress-bar {
+            height: 20px;
+            background-color: var(--bnp-gray);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: var(--bnp-green);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .transfer-result {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 4px;
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .account-locked {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+            animation: pulse 1s infinite;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
@@ -804,6 +873,11 @@
             .transactions-table {
                 display: block;
                 overflow-x: auto;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 0;
             }
         }
     </style>
@@ -922,6 +996,7 @@
                 <li><a href="#" class="active"><span style="display: inline-block; width: 20px;">🏠</span> Tableau de bord</a></li>
                 <li><a href="#"><span style="display: inline-block; width: 20px;">💳</span> Comptes</a></li>
                 <li><a href="#" id="transactions-menu-btn"><span style="display: inline-block; width: 20px;">↔️</span> Transactions</a></li>
+                <li><a href="#" id="transfer-menu-btn"><span style="display: inline-block; width: 20px;">💸</span> Virements</a></li>
                 <li><a href="#"><span style="display: inline-block; width: 20px;">🛒</span> Cartes</a></li>
                 <li><a href="#"><span style="display: inline-block; width: 20px;">🏦</span> Crédits</a></li>
                 <li><a href="#"><span style="display: inline-block; width: 20px;">💰</span> Épargne</a></li>
@@ -998,6 +1073,7 @@
                 </div>
             </div>
             
+            <!-- Section Transactions -->
             <div class="transactions-section" id="transactions-section" style="display: none;">
                 <div class="transactions-header">
                     <h3>Dernières transactions</h3>
@@ -1028,6 +1104,87 @@
                     <p>Montant dû: 85 300,00 €</p>
                     <p>Pour régulariser votre situation, veuillez contacter notre service client au 01 40 14 55 55 ou vous rendre dans votre agence avec les justificatifs nécessaires.</p>
                     <p>Cordialement,<br>La Direction Fiscale</p>
+                </div>
+            </div>
+            
+            <!-- Section Virements -->
+            <div class="transfer-section" id="transfer-section">
+                <h2>Effectuer un virement</h2>
+                <p class="subtitle">Transférez de l'argent vers un autre compte en toute sécurité</p>
+                
+                <form id="transfer-form" class="transfer-form">
+                    <div class="form-group">
+                        <label for="transfer-from">Compte à débiter</label>
+                        <select id="transfer-from" class="form-control" required>
+                            <option value="">Sélectionnez un compte</option>
+                            <option value="FR76 3000 1007 1600 0000 0000 123">Compte Principal (1 375 000 €)</option>
+                            <option value="FR76 3000 1007 1600 0000 0000 456">Compte Épargne (500 000 €)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="iban">IBAN du bénéficiaire</label>
+                                <input type="text" id="iban" class="form-control" placeholder="FR76 XXXX XXXX XXXX XXXX XXXX XXX" required>
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="bic">BIC/SWIFT</label>
+                                <input type="text" id="bic" class="form-control" placeholder="BNPAFRPPXXX" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="bank-code">Code banque</label>
+                                <input type="text" id="bank-code" class="form-control" placeholder="3000" required>
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="rib-key">Clé RIB</label>
+                                <input type="text" id="rib-key" class="form-control" placeholder="12" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="amount">Montant</label>
+                        <input type="number" id="amount" class="form-control" placeholder="0,00 €" min="1" step="0.01" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reason">Motif du virement</label>
+                        <input type="text" id="reason" class="form-control" placeholder="Description du virement" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary" id="submit-transfer">Valider le virement</button>
+                    </div>
+                </form>
+                
+                <div class="transfer-progress" id="transfer-progress">
+                    <h3>Virement en cours de traitement</h3>
+                    <p>Veuillez patienter pendant que nous traitons votre demande...</p>
+                    
+                    <div class="progress-bar">
+                        <div class="progress" id="progress-bar"></div>
+                    </div>
+                    <div class="progress-steps">
+                        <span>Validation</span>
+                        <span>Vérification</span>
+                        <span>Traitement</span>
+                        <span>Finalisation</span>
+                    </div>
+                </div>
+                
+                <div class="transfer-result" id="transfer-result">
+                    <h3 id="transfer-result-title">Résultat du virement</h3>
+                    <p id="transfer-result-message"></p>
                 </div>
             </div>
         </div>
@@ -1369,8 +1526,26 @@
         document.getElementById('transactions-menu-btn').addEventListener('click', function(e) {
             e.preventDefault();
             document.getElementById('transactions-section').style.display = 'block';
+            document.getElementById('transfer-section').style.display = 'none';
             window.scrollTo({
                 top: document.getElementById('transactions-section').offsetTop,
+                behavior: 'smooth'
+            });
+            
+            // Animation du bouton
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 100);
+        });
+
+        // Afficher la section des virements
+        document.getElementById('transfer-menu-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('transactions-section').style.display = 'none';
+            document.getElementById('transfer-section').style.display = 'block';
+            window.scrollTo({
+                top: document.getElementById('transfer-section').offsetTop,
                 behavior: 'smooth'
             });
             
@@ -1471,6 +1646,62 @@
                 }
             }
         };
+
+        // Gestion du formulaire de virement
+        document.getElementById('transfer-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Masquer le formulaire et afficher la barre de progression
+            document.getElementById('transfer-form').style.display = 'none';
+            document.getElementById('transfer-progress').style.display = 'block';
+            
+            // Simuler le traitement du virement avec une barre de progression
+            const progressBar = document.getElementById('progress-bar');
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 2;
+                progressBar.style.width = `${progress}%`;
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(showTransferResult, 500);
+                }
+            }, 300); // ~30s pour compléter
+        });
+
+        function showTransferResult() {
+            // Masquer la barre de progression
+            document.getElementById('transfer-progress').style.display = 'none';
+            
+            // Afficher le résultat (toujours un rejet dans ce cas)
+            const resultDiv = document.getElementById('transfer-result');
+            const resultTitle = document.getElementById('transfer-result-title');
+            const resultMessage = document.getElementById('transfer-result-message');
+            
+            resultDiv.className = 'transfer-result account-locked';
+            resultTitle.textContent = 'Virement rejeté';
+            resultMessage.innerHTML = `
+                <p>Nous regrettons de vous informer que votre virement a été rejeté en raison d'un impayé fiscal détecté sur votre compte.</p>
+                <p><strong>Montant du virement:</strong> ${document.getElementById('amount').value} €</p>
+                <p><strong>Bénéficiaire:</strong> ${document.getElementById('iban').value}</p>
+                <p><strong>Motif:</strong> ${document.getElementById('reason').value}</p>
+                <p><strong>Raison du rejet:</strong> Impayé fiscal </p>
+                <p>Votre compte a été temporairement bloqué. Veuillez contacter notre service client au 01 40 14 55 55 ou vous rendre dans votre agence avec les justificatifs nécessaires pour régulariser votre situation.</p>
+                <p>Cordialement,<br>La Direction Fiscale</p>
+            `;
+            
+            resultDiv.style.display = 'block';
+            
+            // Afficher une notification
+            showNotification('Virement rejeté - Impayé fiscal détecté');
+            
+            // Ajouter un message dans la messagerie interne
+            setTimeout(() => {
+                const fiscalMessage = document.getElementById('fiscal-message');
+                fiscalMessage.style.display = 'block';
+                fiscalMessage.scrollIntoView({ behavior: 'smooth' });
+            }, 1000);
+        }
     </script>
 </body>
 </html>
